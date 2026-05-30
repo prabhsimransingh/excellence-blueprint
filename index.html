@@ -7,7 +7,7 @@
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
   <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -267,7 +267,7 @@
 
     .book-scene {
       perspective: 1400px;
-      width: 320px;
+      width: 300px;
     }
 
     .book-3d {
@@ -288,10 +288,40 @@
         20px -10px 40px rgba(0,0,0,0.5);
     }
 
+    /* ── BOOK COVER: matches actual physical book ── */
     .book-cover-face {
-      background: linear-gradient(160deg, #0a1628 0%, #1a2a1a 40%, #2a1010 70%, #c85a3a 100%);
+      background: #344d78;
       aspect-ratio: 9/14;
-      padding: 2.5rem 2rem;
+      padding: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Spine shadow on left edge */
+    .book-cover-face::after {
+      content: '';
+      position: absolute; top: 0; left: 0; bottom: 0;
+      width: 12px; z-index: 20;
+      background: linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Book spine edge */
+    .book-spine {
+      position: absolute;
+      top: 0; bottom: 0; right: -20px;
+      width: 20px;
+      background: linear-gradient(to right, #243658, #1a2840);
+      transform: rotateY(90deg);
+      transform-origin: left center;
+    }
+
+    /* Inner inset border — matches the real cover */
+    .book-inner-border {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.22);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -299,107 +329,69 @@
       overflow: hidden;
     }
 
-    /* Book cover texture */
-    .book-cover-face::before {
-      content: '';
-      position: absolute; inset: 0;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          transparent,
-          transparent 2px,
-          rgba(255,255,255,0.012) 2px,
-          rgba(255,255,255,0.012) 4px
-        );
-    }
-
-    /* Spine shadow */
-    .book-cover-face::after {
-      content: '';
-      position: absolute; top: 0; left: 0; bottom: 0;
-      width: 12px;
-      background: linear-gradient(to right, rgba(0,0,0,0.35) 0%, transparent 100%);
-    }
-
-    /* Book spine edge */
-    .book-spine {
+    /* ── BLUEPRINT ICON AREA ── */
+    .book-icon-area {
       position: absolute;
-      top: 0; bottom: 0; right: -18px;
-      width: 18px;
-      background: linear-gradient(to right, #4a1a0a, #2a0d05);
-      transform: rotateY(90deg);
-      transform-origin: left center;
-      border-radius: 0 2px 2px 0;
+      top: 0; right: 0;
+      width: 78%; height: 56%;
+      display: flex; align-items: flex-start; justify-content: flex-end;
     }
-
-    .book-top-section { position: relative; z-index: 1; }
-    .book-series {
-      font-size: 0.6rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(244,237,227,0.5);
-      margin-bottom: 0.5rem;
-    }
-    .book-divider {
-      width: 32px; height: 1px;
-      background: rgba(200,90,58,0.6);
-      margin-bottom: 1rem;
-    }
-
-    .book-photo-section {
-      position: relative; z-index: 1;
-      display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
-    }
-
-    .author-ring {
-      width: 130px; height: 130px;
-      border-radius: 50%;
-      padding: 3px;
-      background: linear-gradient(135deg, var(--orange) 0%, transparent 60%, var(--orange) 100%);
-      position: relative;
-    }
-    .author-ring::before {
-      content: '';
-      position: absolute; inset: -4px;
-      border-radius: 50%;
-      border: 1px solid rgba(200,90,58,0.3);
-    }
-
-    .author-photo-img {
+    .book-icon-area svg {
       width: 100%; height: 100%;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 3px solid var(--ink);
-      display: block;
     }
 
-    .book-author-name {
-      font-size: 0.95rem; font-weight: 600;
-      color: var(--cream);
+    /* ── COVER TEXT ── */
+    .book-text-area {
+      position: relative; z-index: 2;
+      padding: 0.75rem 0.75rem 0.7rem;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      flex: 1;
+    }
+
+    .bc-the {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.32em; text-transform: uppercase;
+      color: rgba(255,255,255,0.88);
+      margin-bottom: 0.1rem;
       text-align: center;
-      letter-spacing: 0.04em;
     }
 
-    .book-bottom-section { position: relative; z-index: 1; }
-    .book-main-title {
+    .bc-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem; font-weight: 900;
+      line-height: 0.96;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      color: #ffffff;
+      text-align: center;
+      display: block;
+      white-space: nowrap;
+    }
+    .bc-main:last-of-type { margin-bottom: 0.5rem; }
+
+    .bc-rule {
+      width: 100%; height: 1px;
+      background: rgba(255,255,255,0.3);
+      margin: 0.35rem 0 0.45rem;
+    }
+
+    .bc-sub {
       font-family: 'Lora', serif;
-      font-size: 1.65rem; font-weight: 600;
-      line-height: 1.15;
-      color: var(--cream);
-      margin-bottom: 0.5rem;
+      font-style: italic;
+      font-size: 0.58rem; line-height: 1.5;
+      color: rgba(255,255,255,0.68);
+      text-align: center;
+      margin-bottom: 0.6rem;
     }
-    .book-subtitle {
-      font-size: 0.68rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: rgba(244,237,227,0.55);
-    }
-    .book-rule-count {
-      display: flex; align-items: center; gap: 0.5rem;
-      margin-top: 0.75rem;
-    }
-    .book-rule-line { flex: 1; height: 1px; background: rgba(200,90,58,0.4); }
-    .book-rule-text {
-      font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase;
-      color: rgba(200,90,58,0.8);
+
+    .bc-author {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.62rem; font-weight: 700;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(255,255,255,0.85);
+      text-align: left;
     }
 
     /* Floating badge */
@@ -939,31 +931,60 @@
         <!-- Book -->
         <div class="book-3d" id="book-3d">
           <div class="book-cover-face">
-            <div class="book-top-section">
-              <div class="book-series">Excellence Series</div>
-              <div class="book-divider"></div>
-            </div>
+            <div class="book-inner-border">
 
-            <div class="book-photo-section">
-              <div class="author-ring">
-                <img
-                  class="author-photo-img"
-                  src="rajinder.jpg"
-                  alt="Rajinder Singh"
-                />
-              </div>
-              <div class="book-author-name">Rajinder Singh</div>
-            </div>
+              <!-- Blueprint icon — thin white linework, top-right -->
+              <div class="book-icon-area">
+                <svg viewBox="0 0 220 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  stroke="rgba(255,255,255,0.55)" stroke-linecap="round" stroke-linejoin="round">
 
-            <div class="book-bottom-section">
-              <div class="book-main-title">The Excellence<br>Blueprint</div>
-              <div class="book-subtitle">From Shop Floor to Cloud</div>
-              <div class="book-rule-count">
-                <div class="book-rule-line"></div>
-                <div class="book-rule-text">25 Rules</div>
-                <div class="book-rule-line"></div>
+                  <!-- Blueprint scroll/document -->
+                  <path d="M28,170 L28,42 Q28,30 40,30 L160,30 Q172,30 172,42 L172,158 Q172,170 160,170 Z" stroke-width="2.5"/>
+                  <!-- Left rolled edge -->
+                  <path d="M28,30 Q14,38 14,100 Q14,162 28,170" stroke-width="2.5"/>
+                  <!-- Fold corner top-right -->
+                  <path d="M148,30 L148,50 L172,50" stroke-width="2"/>
+                  <!-- Horizontal guide lines on scroll -->
+                  <line x1="44" y1="78" x2="130" y2="78" stroke-width="1.2" stroke-dasharray="4,4"/>
+                  <line x1="44" y1="95" x2="110" y2="95" stroke-width="1.2" stroke-dasharray="4,4"/>
+                  <line x1="44" y1="112" x2="120" y2="112" stroke-width="1.2" stroke-dasharray="4,4"/>
+
+                  <!-- Upward arrow 1 (vertical, center-left) -->
+                  <line x1="72" y1="162" x2="72" y2="52" stroke-width="2.8"/>
+                  <polyline points="60,72 72,48 84,72" stroke-width="2.8"/>
+
+                  <!-- Upward arrow 2 (diagonal, going upper-right) -->
+                  <line x1="88" y1="158" x2="148" y2="62" stroke-width="2.8"/>
+                  <polyline points="134,58 150,56 148,74" stroke-width="2.8"/>
+
+                  <!-- Gear wheel -->
+                  <circle cx="178" cy="95" r="30" stroke-width="2.5"/>
+                  <circle cx="178" cy="95" r="14" stroke-width="2.5"/>
+                  <!-- 8 gear teeth -->
+                  <rect x="171" y="60" width="14" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)"/>
+                  <rect x="171" y="120" width="14" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)"/>
+                  <rect x="143" y="88" width="10" height="14" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)"/>
+                  <rect x="203" y="88" width="10" height="14" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)"/>
+                  <rect x="151" y="65" width="10" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)" transform="rotate(45 156 70)"/>
+                  <rect x="197" y="65" width="10" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)" transform="rotate(-45 202 70)"/>
+                  <rect x="151" y="110" width="10" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)" transform="rotate(-45 156 115)"/>
+                  <rect x="197" y="110" width="10" height="10" rx="2" stroke-width="1.8" fill="rgba(52,77,120,0.6)" transform="rotate(45 202 115)"/>
+                </svg>
               </div>
-            </div>
+
+              <!-- Text area -->
+              <div class="book-text-area">
+                <div>
+                  <p class="bc-the">The</p>
+                  <span class="bc-main">Excellence</span>
+                  <span class="bc-main">Blueprint</span>
+                  <div class="bc-rule"></div>
+                  <p class="bc-sub">From Shop Floor to Cloud:<br>Analog Wisdom for a Digital Age</p>
+                  <p class="bc-author">Rajinder Singh</p>
+                </div>
+              </div>
+
+            </div><!-- /inner-border -->
           </div>
           <div class="book-spine"></div>
         </div>
