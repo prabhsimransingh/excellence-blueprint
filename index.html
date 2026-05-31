@@ -90,28 +90,58 @@
 
     /* ── BOOK COVER ── */
     .hero-right { position:relative; z-index:2; display:flex; justify-content:center; align-items:center; }
-    .book-scene { perspective:1400px; width:340px; }
-    .book-3d { transform-style:preserve-3d; transform:rotateY(-15deg) rotateX(5deg); transition:transform 0.6s var(--ease-out),box-shadow 0.6s; will-change:transform; position:relative; width:100%; border-radius:4px; overflow:hidden; }
-    .book-3d:hover { box-shadow:-20px 20px 60px rgba(200,90,58,0.25),20px -10px 40px rgba(0,0,0,0.5); }
-    .book-cover-face { background:#344d78; aspect-ratio:9/14; padding:1.1rem; display:flex; flex-direction:column; position:relative; overflow:hidden; }
-    .book-cover-face::after { content:''; position:absolute; top:0; left:0; bottom:0; width:12px; z-index:20; background:linear-gradient(to right,rgba(0,0,0,0.45) 0%,transparent 100%); pointer-events:none; }
-    .book-spine { position:absolute; top:0; bottom:0; right:-20px; width:20px; background:linear-gradient(to right,#243658,#1a2840); transform:rotateY(90deg); transform-origin:left center; }
-    .book-inner-border { flex:1; border:1px solid rgba(255,255,255,0.22); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; }
-    .book-icon-area { position:absolute; top:0; left:0; right:0; height:58%; display:flex; align-items:flex-start; justify-content:center; }
-    .book-icon-area svg { width:100%; height:100%; }
-    .book-text-area { position:relative; z-index:2; padding:0.75rem 0.75rem 0.7rem; display:flex; flex-direction:column; justify-content:flex-end; flex:1; }
-    .bc-the { font-family:'Playfair Display',serif; font-size:0.7rem; font-weight:700; letter-spacing:0.32em; text-transform:uppercase; color:rgba(255,255,255,0.88); margin-bottom:0.1rem; text-align:center; }
-    .bc-main { font-family:'Playfair Display',serif; font-size:1.55rem; font-weight:900; line-height:0.96; letter-spacing:0.02em; text-transform:uppercase; color:#ffffff; text-align:center; display:block; white-space:nowrap; }
-    .bc-main.gold { color:var(--gold2); }
-    .bc-main:last-of-type { margin-bottom:0.5rem; }
-    .bc-rule { width:100%; height:1px; background:rgba(255,255,255,0.3); margin:0.35rem 0 0.45rem; }
-    .bc-sub { font-family:'Lora',serif; font-style:italic; font-size:0.58rem; line-height:1.5; color:rgba(255,255,255,0.68); text-align:center; margin-bottom:0.6rem; }
-    .bc-author { font-family:'Playfair Display',serif; font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.85); text-align:left; }
+    .book-scene { width:340px; position:relative; }
+
+    /* Fade the bottom reflection into the dark background */
+    .book-scene::after {
+      content:'';
+      position:absolute; bottom:0; left:-10px; right:-10px;
+      height:38%;
+      background:linear-gradient(to top, var(--ink) 0%, var(--ink) 20%, transparent 100%);
+      pointer-events:none; z-index:5;
+    }
+
+    /* Glow ring behind the book */
+    .book-glow {
+      position:absolute; inset:-30px;
+      background:radial-gradient(ellipse at 40% 60%, rgba(212,148,26,0.18) 0%, rgba(200,90,58,0.1) 40%, transparent 70%);
+      border-radius:50%;
+      filter:blur(24px);
+      pointer-events:none;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse {
+      0%,100% { opacity:0.7; transform:scale(1); }
+      50%      { opacity:1;   transform:scale(1.08); }
+    }
+
+    /* Floating animation on the book image */
+    .book-float {
+      position:relative; z-index:2;
+      animation: bookFloat 5s ease-in-out infinite;
+      transform-origin:center bottom;
+      filter: drop-shadow(-18px 24px 40px rgba(0,0,0,0.65))
+              drop-shadow(0 0 30px rgba(212,148,26,0.2));
+      transition:filter 0.5s;
+    }
+    .book-float:hover {
+      filter: drop-shadow(-22px 28px 50px rgba(0,0,0,0.7))
+              drop-shadow(0 0 50px rgba(212,148,26,0.35));
+    }
+    @keyframes bookFloat {
+      0%,100% { transform: translateY(0px)   rotate(-2deg); }
+      50%      { transform: translateY(-14px) rotate(-1deg); }
+    }
+
+    .book-cover-img {
+      width:100%; display:block;
+      border-radius:3px;
+    }
 
     /* Floating badge */
-    .floating-badge { position:absolute; top:-1.5rem; right:-2rem; background:var(--orange); padding:0.75rem 1rem; clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%); text-align:center; transform:rotate(8deg); z-index:10; opacity:0; }
-    .badge-line1 { font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:white; }
-    .badge-line2 { font-size:0.55rem; font-weight:500; color:rgba(255,255,255,0.8); }
+    .floating-badge { position:absolute; top:-0.5rem; right:-1.5rem; background:var(--orange); padding:0.7rem 0.9rem; clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%); text-align:center; transform:rotate(8deg); z-index:10; opacity:0; }
+    .badge-line1 { font-size:0.58rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:white; }
+    .badge-line2 { font-size:0.52rem; font-weight:500; color:rgba(255,255,255,0.85); }
 
     /* ── MARQUEE ── */
     .marquee-band { border-top:1px solid var(--border); border-bottom:1px solid var(--border); overflow:hidden; padding:0.85rem 0; white-space:nowrap; background:rgba(255,255,255,0.02); }
@@ -361,53 +391,19 @@
 
     <div class="hero-right">
       <div class="book-scene" id="book-scene">
+        <div class="book-glow"></div>
+
         <div class="floating-badge" id="badge">
           <div class="badge-line1">Shingo</div>
           <div class="badge-line2">Endorsed</div>
         </div>
 
-        <div class="book-3d" id="book-3d">
-          <div class="book-cover-face">
-            <div class="book-inner-border">
-              <div class="book-icon-area">
-                <svg viewBox="0 0 280 215" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="rgba(255,255,255,0.75)" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12,55 L12,185 Q12,195 22,195 L198,195 L198,55 L22,55 Z" stroke-width="2"/>
-                  <ellipse cx="198" cy="125" rx="12" ry="70" stroke-width="2"/>
-                  <ellipse cx="198" cy="125" rx="5" ry="62" stroke-width="1.2" stroke-dasharray="3,3"/>
-                  <line x1="28" y1="138" x2="182" y2="138" stroke-width="1.2" stroke-dasharray="6,5"/>
-                  <line x1="28" y1="158" x2="165" y2="158" stroke-width="1.2" stroke-dasharray="6,5"/>
-                  <line x1="28" y1="178" x2="175" y2="178" stroke-width="1.2" stroke-dasharray="6,5"/>
-                  <line x1="75"  y1="200" x2="52"  y2="22" stroke-width="2.8"/>
-                  <polyline points="40,44 51,16 66,40" stroke-width="2.8" fill="none"/>
-                  <line x1="110" y1="200" x2="110" y2="10" stroke-width="2.8"/>
-                  <polyline points="98,32 110,6 122,32" stroke-width="2.8" fill="none"/>
-                  <line x1="145" y1="200" x2="168" y2="22" stroke-width="2.8"/>
-                  <polyline points="154,40 169,16 180,44" stroke-width="2.8" fill="none"/>
-                  <circle cx="238" cy="112" r="30" stroke-width="2.4"/>
-                  <circle cx="238" cy="112" r="13" stroke-width="2.4"/>
-                  <rect x="231" y="78"  width="14" height="10" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <rect x="231" y="136" width="14" height="10" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <rect x="204" y="105" width="10" height="14" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <rect x="264" y="105" width="10" height="14" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <rect x="211" y="84"  width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(45 216 89)"/>
-                  <rect x="255" y="84"  width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(-45 260 89)"/>
-                  <rect x="211" y="130" width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(-45 216 135)"/>
-                  <rect x="255" y="130" width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(45 260 135)"/>
-                </svg>
-              </div>
-              <div class="book-text-area">
-                <div>
-                  <p class="bc-the">The</p>
-                  <span class="bc-main">Excellence</span>
-                  <span class="bc-main gold">Blueprint</span>
-                  <div class="bc-rule"></div>
-                  <p class="bc-sub">From Shop Floor to Cloud:<br>Analog Wisdom for a Digital Age</p>
-                  <p class="bc-author">Rajinder Singh</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="book-spine"></div>
+        <div class="book-float" id="book-3d">
+          <img
+            class="book-cover-img"
+            src="book-cover.jpg"
+            alt="The Excellence Blueprint by Rajinder Singh"
+          />
         </div>
       </div>
     </div>
@@ -717,8 +713,8 @@
       .to('#hero-sub',      { opacity:1, duration:0.8 }, '-=0.5')
       .to('#hero-stats',    { opacity:1, duration:0.6 }, '-=0.4')
       .to('#hero-actions',  { opacity:1, duration:0.6 }, '-=0.4')
-      .from('#book-3d',     { opacity:0, y:60, rotateY:-30, duration:1.2, ease:'power3.out' }, '-=0.8')
-      .to('#badge',         { opacity:1, duration:0.5, ease:'back.out(2)' }, '-=0.4');
+      .from('#book-3d',     { opacity:0, y:50, duration:1.0, ease:'power3.out' }, '-=0.7')
+      .to('#badge',         { opacity:1, duration:0.5, ease:'back.out(2)' }, '-=0.3');
 
     // Counters
     document.querySelectorAll('[data-count]').forEach(el => {
@@ -726,16 +722,29 @@
       gsap.fromTo(el, { textContent:'0' }, { textContent:target, duration:1.5, delay:1.2, ease:'power2.out', snap:{ textContent:1 }, onUpdate() { el.textContent = Math.round(+el.textContent); } });
     });
 
-    // 3D book tilt
+    // Book mouse-tracking tilt
     const bookScene = document.getElementById('book-scene');
-    const book3d = document.getElementById('book-3d');
+    const book3d    = document.getElementById('book-3d');
     bookScene.addEventListener('mousemove', e => {
-      const r = bookScene.getBoundingClientRect();
-      const nx = (e.clientX - r.left)/r.width  - 0.5;
-      const ny = (e.clientY - r.top) /r.height - 0.5;
-      gsap.to(book3d, { rotateY:nx*25, rotateX:-ny*15, duration:0.6, ease:'power2.out', transformPerspective:1400, transformStyle:'preserve-3d' });
+      const r  = bookScene.getBoundingClientRect();
+      const nx = (e.clientX - r.left) / r.width  - 0.5;
+      const ny = (e.clientY - r.top)  / r.height - 0.5;
+      gsap.to(book3d, {
+        rotateY: nx * 18, rotateX: -ny * 10,
+        duration: 0.5, ease: 'power2.out',
+        transformPerspective: 1200,
+        // pause the float animation while hovering
+        animationPlayState: 'paused',
+        overwrite: 'auto',
+      });
     });
-    bookScene.addEventListener('mouseleave', () => { gsap.to(book3d, { rotateY:-15, rotateX:5, duration:1, ease:'elastic.out(1,0.5)' }); });
+    bookScene.addEventListener('mouseleave', () => {
+      gsap.to(book3d, {
+        rotateY: 0, rotateX: 0,
+        duration: 0.9, ease: 'elastic.out(1, 0.5)',
+        overwrite: 'auto',
+      });
+    });
 
     // Hero parallax
     gsap.to('.hero-right', { scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:0.8 }, y:-80 });
