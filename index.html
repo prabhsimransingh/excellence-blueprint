@@ -4,1013 +4,416 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Excellence Blueprint — Rajinder Singh</title>
-
-  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400;1,600&family=Geist:wght@300;400;500;600;700;800;900&family=Geist+Mono:wght@400;500&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-
-  <!-- GSAP + ScrollTrigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-
-  <!-- Lenis smooth scroll -->
   <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 
   <style>
-    /* ─── RESET & TOKENS ─────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --ink:      #0a0d12;
-      --surface:  #111520;
-      --orange:   #c85a3a;
-      --orange2:  #e8714f;
-      --cream:    #f4ede3;
-      --muted:    rgba(244,237,227,0.45);
-      --border:   rgba(244,237,227,0.10);
+      --ink:     #0a0d12;
+      --surface: #111520;
+      --orange:  #c85a3a;
+      --orange2: #e8714f;
+      --gold:    #D4941A;
+      --gold2:   #F0B040;
+      --cream:   #f4ede3;
+      --muted:   rgba(244,237,227,0.45);
+      --border:  rgba(244,237,227,0.10);
       --ease-out: cubic-bezier(0.23,1,0.32,1);
       --ease-io:  cubic-bezier(0.77,0,0.175,1);
     }
 
     html { font-size: 16px; }
-    body {
-      font-family: 'Geist', sans-serif;
-      background: var(--ink);
-      color: var(--cream);
-      overflow-x: hidden;
-      cursor: none;
-    }
+    body { font-family: 'Geist', sans-serif; background: var(--ink); color: var(--cream); overflow-x: hidden; cursor: none; }
 
-    /* Prefers-reduced-motion */
     @media (prefers-reduced-motion: reduce) {
       *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
     }
 
-    /* ─── CURSOR ─────────────────────────────────────────────────── */
-    #cursor-dot {
-      position: fixed; top: 0; left: 0; z-index: 9999;
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--orange);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: transform 0.1s var(--ease-out), width 0.2s, height 0.2s, opacity 0.2s;
-    }
-    #cursor-ring {
-      position: fixed; top: 0; left: 0; z-index: 9998;
-      width: 36px; height: 36px; border-radius: 50%;
-      border: 1.5px solid rgba(200,90,58,0.6);
-      pointer-events: none;
-      transform: translate(-50%, -50%);
-      transition: transform 0.35s var(--ease-out), width 0.3s, height 0.3s, border-color 0.2s;
-    }
-    body:has(a:hover) #cursor-ring,
-    body:has(button:hover) #cursor-ring {
-      width: 56px; height: 56px;
-      border-color: var(--orange);
-    }
+    /* ── CURSOR ── */
+    #cursor-dot  { position: fixed; top:0; left:0; z-index:9999; width:8px; height:8px; border-radius:50%; background:var(--orange); pointer-events:none; transform:translate(-50%,-50%); }
+    #cursor-ring { position: fixed; top:0; left:0; z-index:9998; width:36px; height:36px; border-radius:50%; border:1.5px solid rgba(200,90,58,0.6); pointer-events:none; transform:translate(-50%,-50%); transition:width 0.3s,height 0.3s,border-color 0.2s; }
 
-    /* ─── NAV ────────────────────────────────────────────────────── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-      padding: 1.25rem 3rem;
-      display: flex; align-items: center; justify-content: space-between;
-      transition: background 0.4s var(--ease-out), backdrop-filter 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(10,13,18,0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-logo {
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--cream);
-      text-decoration: none;
-    }
-    .nav-links { display: flex; align-items: center; gap: 2.5rem; }
-    .nav-link {
-      font-size: 0.8rem; font-weight: 500; letter-spacing: 0.06em;
-      color: var(--muted); text-decoration: none;
-      transition: color 0.2s;
-    }
-    .nav-link:hover { color: var(--cream); }
-    .nav-cta {
-      padding: 0.6rem 1.5rem;
-      border: 1px solid var(--orange);
-      color: var(--orange);
-      font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase;
-      cursor: none;
-      transition: background 0.2s, color 0.2s, transform 0.16s var(--ease-out), box-shadow 0.2s;
-      background: transparent;
-    }
-    .nav-cta:hover {
-      background: var(--orange); color: white;
-      box-shadow: 0 0 30px rgba(200,90,58,0.4);
-    }
-    .nav-cta:active { transform: scale(0.97); }
+    /* ── SCROLL BAR ── */
+    #scroll-bar { position:fixed; top:0; left:0; z-index:200; height:2px; background:linear-gradient(to right,var(--orange),var(--gold)); transform-origin:left center; transform:scaleX(0); }
 
-    /* ─── HERO ───────────────────────────────────────────────────── */
-    #hero {
-      min-height: 100dvh;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      padding: 0 3rem;
-      padding-top: 5.5rem;
-      padding-bottom: 3rem;
-      gap: 3rem;
-      align-items: center;
-      position: relative;
-      overflow: hidden;
-    }
+    /* ── NAV ── */
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.1rem 3rem; display:flex; align-items:center; justify-content:space-between; transition:background 0.4s,backdrop-filter 0.4s; }
+    nav.scrolled { background:rgba(10,13,18,0.88); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
+    .nav-brand { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
+    .nav-logo-mark { flex-shrink:0; }
+    .nav-logo-text { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); line-height:1.2; }
+    .nav-logo-sub { font-size:0.56rem; font-weight:400; letter-spacing:0.06em; color:var(--muted); display:block; }
+    .nav-links { display:flex; align-items:center; gap:2rem; }
+    .nav-link { font-size:0.78rem; font-weight:500; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .nav-link:hover { color:var(--cream); }
+    .nav-cta { padding:0.55rem 1.4rem; border:1px solid var(--orange); color:var(--orange); font-size:0.78rem; font-weight:600; letter-spacing:0.06em; text-transform:uppercase; cursor:none; background:transparent; transition:background 0.2s,color 0.2s,transform 0.16s var(--ease-out); }
+    .nav-cta:hover { background:var(--orange); color:white; }
+    .nav-cta:active { transform:scale(0.97); }
 
-    /* Noise grain overlay */
-    #hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none; z-index: 1; opacity: 0.4;
-    }
+    /* ── HERO ── */
+    #hero { min-height:100dvh; display:grid; grid-template-columns:1fr 1fr; padding:0 3rem; padding-top:5.5rem; padding-bottom:3rem; gap:3rem; align-items:center; position:relative; overflow:hidden; }
+    #hero::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; opacity:0.4; }
+    .orb { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
+    .orb-1 { width:600px; height:600px; background:radial-gradient(circle,rgba(200,90,58,0.1) 0%,transparent 70%); top:-100px; right:-100px; }
+    .orb-2 { width:400px; height:400px; background:radial-gradient(circle,rgba(212,148,26,0.07) 0%,transparent 70%); bottom:-50px; left:30%; }
 
-    /* Glowing orbs */
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      pointer-events: none;
-    }
-    .orb-1 {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(200,90,58,0.12) 0%, transparent 70%);
-      top: -100px; right: -100px;
-    }
-    .orb-2 {
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(100,130,200,0.08) 0%, transparent 70%);
-      bottom: -50px; left: 30%;
-    }
+    .hero-left { position:relative; z-index:2; display:flex; flex-direction:column; gap:2rem; }
+    .hero-kicker { display:flex; align-items:center; gap:0.75rem; font-size:0.7rem; font-weight:600; letter-spacing:0.16em; text-transform:uppercase; color:var(--orange); }
+    .hero-kicker::before { content:''; display:inline-block; width:28px; height:1px; background:var(--orange); }
 
-    /* ─── HERO LEFT ──────────────────────────────────────────────── */
-    .hero-left {
-      position: relative; z-index: 2;
-      display: flex; flex-direction: column; gap: 2.5rem;
-    }
+    .hero-title { font-family:'Lora',serif; font-size:clamp(2.6rem,4.8vw,5rem); font-weight:600; line-height:1.08; letter-spacing:-0.02em; color:var(--cream); }
+    .hero-title .gold { color:var(--gold); font-style:italic; }
 
-    .hero-kicker {
-      display: flex; align-items: center; gap: 0.75rem;
-      font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.16em; text-transform: uppercase;
-      color: var(--orange);
-    }
-    .hero-kicker::before {
-      content: '';
-      display: inline-block;
-      width: 28px; height: 1px;
-      background: var(--orange);
-    }
+    .hero-problem { font-size:0.9rem; line-height:1.65; color:var(--muted); max-width:50ch; padding-left:1rem; border-left:2px solid rgba(200,90,58,0.4); opacity:0; }
 
-    .hero-title {
-      font-family: 'Lora', serif;
-      font-size: clamp(3rem, 5.5vw, 5.5rem);
-      font-weight: 600;
-      line-height: 1.05;
-      letter-spacing: -0.02em;
-      color: var(--cream);
-    }
-    .hero-title em {
-      font-style: italic;
-      color: var(--orange);
-    }
+    .hero-stats { display:flex; gap:2.5rem; opacity:0; }
+    .stat-item { display:flex; flex-direction:column; gap:0.2rem; }
+    .stat-num { font-size:2rem; font-weight:800; color:var(--cream); line-height:1; font-variant-numeric:tabular-nums; }
+    .stat-label { font-size:0.68rem; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--muted); }
 
-    /* Split text spans — JS will split words */
-    .split-word {
-      display: inline-block;
-      overflow: hidden;
-    }
-    .split-word-inner {
-      display: inline-block;
-      transform: translateY(100%);
-    }
+    .hero-actions { display:flex; align-items:center; gap:1.25rem; opacity:0; }
+    .btn-primary { padding:0.9rem 2.2rem; background:var(--orange); color:white; font-weight:700; font-size:0.82rem; letter-spacing:0.06em; text-transform:uppercase; border:none; cursor:none; transition:background 0.2s,box-shadow 0.3s,transform 0.16s var(--ease-out); position:relative; overflow:hidden; }
+    .btn-primary::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,0.15) 0%,transparent 60%); opacity:0; transition:opacity 0.2s; }
+    .btn-primary:hover::after { opacity:1; }
+    .btn-primary:hover { background:var(--orange2); box-shadow:0 8px 40px rgba(200,90,58,0.45); }
+    .btn-primary:active { transform:scale(0.97); }
+    .btn-ghost { padding:0.9rem 2rem; background:transparent; color:var(--muted); font-weight:500; font-size:0.82rem; border:1px solid var(--border); cursor:none; transition:color 0.2s,border-color 0.2s,transform 0.16s var(--ease-out); display:flex; align-items:center; gap:0.6rem; }
+    .btn-ghost:hover { color:var(--cream); border-color:rgba(244,237,227,0.3); }
+    .btn-ghost:active { transform:scale(0.97); }
+    .btn-ghost svg { transition:transform 0.2s var(--ease-out); }
+    .btn-ghost:hover svg { transform:translateX(4px); }
 
-    .hero-sub {
-      font-size: 1.05rem;
-      line-height: 1.65;
-      color: var(--muted);
-      max-width: 52ch;
-      opacity: 0;
-    }
-
-    .hero-stats {
-      display: flex; gap: 2.5rem;
-      opacity: 0;
-    }
-    .stat-item { display: flex; flex-direction: column; gap: 0.2rem; }
-    .stat-num {
-      font-size: 2rem; font-weight: 800;
-      color: var(--cream); line-height: 1;
-      font-variant-numeric: tabular-nums;
-    }
-    .stat-label {
-      font-size: 0.7rem; font-weight: 500;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted);
-    }
-
-    .hero-actions {
-      display: flex; align-items: center; gap: 1.25rem;
-      opacity: 0;
-    }
-    .btn-primary {
-      padding: 0.9rem 2.2rem;
-      background: var(--orange);
-      color: white;
-      font-weight: 700; font-size: 0.85rem;
-      letter-spacing: 0.06em; text-transform: uppercase;
-      border: none; cursor: none;
-      transition: background 0.2s, box-shadow 0.3s, transform 0.16s var(--ease-out);
-      position: relative; overflow: hidden;
-    }
-    .btn-primary::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
-      opacity: 0; transition: opacity 0.2s;
-    }
-    .btn-primary:hover::after { opacity: 1; }
-    .btn-primary:hover {
-      background: var(--orange2);
-      box-shadow: 0 8px 40px rgba(200,90,58,0.5);
-    }
-    .btn-primary:active { transform: scale(0.97); }
-
-    .btn-ghost {
-      padding: 0.9rem 2rem;
-      background: transparent;
-      color: var(--muted);
-      font-weight: 500; font-size: 0.85rem;
-      border: 1px solid var(--border);
-      cursor: none;
-      transition: color 0.2s, border-color 0.2s, transform 0.16s var(--ease-out);
-      display: flex; align-items: center; gap: 0.6rem;
-    }
-    .btn-ghost:hover { color: var(--cream); border-color: rgba(244,237,227,0.3); }
-    .btn-ghost:active { transform: scale(0.97); }
-    .btn-ghost svg { transition: transform 0.2s var(--ease-out); }
-    .btn-ghost:hover svg { transform: translateX(4px); }
-
-    /* ─── HERO RIGHT / BOOK ──────────────────────────────────────── */
-    .hero-right {
-      position: relative; z-index: 2;
-      display: flex; justify-content: center; align-items: center;
-    }
-
-    .book-scene {
-      perspective: 1400px;
-      width: 380px;
-    }
-
-    .book-3d {
-      transform-style: preserve-3d;
-      transform: rotateY(-15deg) rotateX(5deg);
-      transition: transform 0.6s var(--ease-out), box-shadow 0.6s;
-      will-change: transform;
-      position: relative;
-      width: 100%;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-
-    /* Book glow on hover */
-    .book-3d:hover {
-      box-shadow:
-        -20px 20px 60px rgba(200,90,58,0.3),
-        20px -10px 40px rgba(0,0,0,0.5);
-    }
-
-    /* ── BOOK COVER: matches actual physical book ── */
-    .book-cover-face {
-      background: #344d78;
-      aspect-ratio: 9/14;
-      padding: 1.1rem;
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* Spine shadow on left edge */
-    .book-cover-face::after {
-      content: '';
-      position: absolute; top: 0; left: 0; bottom: 0;
-      width: 12px; z-index: 20;
-      background: linear-gradient(to right, rgba(0,0,0,0.45) 0%, transparent 100%);
-      pointer-events: none;
-    }
-
-    /* Book spine edge */
-    .book-spine {
-      position: absolute;
-      top: 0; bottom: 0; right: -20px;
-      width: 20px;
-      background: linear-gradient(to right, #243658, #1a2840);
-      transform: rotateY(90deg);
-      transform-origin: left center;
-    }
-
-    /* Inner inset border — matches the real cover */
-    .book-inner-border {
-      flex: 1;
-      border: 1px solid rgba(255,255,255,0.22);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* ── BLUEPRINT ICON AREA ── */
-    .book-icon-area {
-      position: absolute;
-      top: 0; left: 0; right: 0;
-      height: 58%;
-      display: flex; align-items: flex-start; justify-content: center;
-    }
-    .book-icon-area svg {
-      width: 100%; height: 100%;
-    }
-
-    /* ── COVER TEXT ── */
-    .book-text-area {
-      position: relative; z-index: 2;
-      padding: 0.75rem 0.75rem 0.7rem;
-      display: flex; flex-direction: column;
-      justify-content: flex-end;
-      flex: 1;
-    }
-
-    .bc-the {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.7rem; font-weight: 700;
-      letter-spacing: 0.32em; text-transform: uppercase;
-      color: rgba(255,255,255,0.88);
-      margin-bottom: 0.1rem;
-      text-align: center;
-    }
-
-    .bc-main {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.55rem; font-weight: 900;
-      line-height: 0.96;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-      color: #ffffff;
-      text-align: center;
-      display: block;
-      white-space: nowrap;
-    }
-    .bc-main:last-of-type { margin-bottom: 0.5rem; }
-
-    .bc-rule {
-      width: 100%; height: 1px;
-      background: rgba(255,255,255,0.3);
-      margin: 0.35rem 0 0.45rem;
-    }
-
-    .bc-sub {
-      font-family: 'Lora', serif;
-      font-style: italic;
-      font-size: 0.58rem; line-height: 1.5;
-      color: rgba(255,255,255,0.68);
-      text-align: center;
-      margin-bottom: 0.6rem;
-    }
-
-    .bc-author {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.62rem; font-weight: 700;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: rgba(255,255,255,0.85);
-      text-align: left;
-    }
+    /* ── BOOK COVER ── */
+    .hero-right { position:relative; z-index:2; display:flex; justify-content:center; align-items:center; }
+    .book-scene { perspective:1400px; width:340px; }
+    .book-3d { transform-style:preserve-3d; transform:rotateY(-15deg) rotateX(5deg); transition:transform 0.6s var(--ease-out),box-shadow 0.6s; will-change:transform; position:relative; width:100%; border-radius:4px; overflow:hidden; }
+    .book-3d:hover { box-shadow:-20px 20px 60px rgba(200,90,58,0.25),20px -10px 40px rgba(0,0,0,0.5); }
+    .book-cover-face { background:#344d78; aspect-ratio:9/14; padding:1.1rem; display:flex; flex-direction:column; position:relative; overflow:hidden; }
+    .book-cover-face::after { content:''; position:absolute; top:0; left:0; bottom:0; width:12px; z-index:20; background:linear-gradient(to right,rgba(0,0,0,0.45) 0%,transparent 100%); pointer-events:none; }
+    .book-spine { position:absolute; top:0; bottom:0; right:-20px; width:20px; background:linear-gradient(to right,#243658,#1a2840); transform:rotateY(90deg); transform-origin:left center; }
+    .book-inner-border { flex:1; border:1px solid rgba(255,255,255,0.22); display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden; }
+    .book-icon-area { position:absolute; top:0; left:0; right:0; height:58%; display:flex; align-items:flex-start; justify-content:center; }
+    .book-icon-area svg { width:100%; height:100%; }
+    .book-text-area { position:relative; z-index:2; padding:0.75rem 0.75rem 0.7rem; display:flex; flex-direction:column; justify-content:flex-end; flex:1; }
+    .bc-the { font-family:'Playfair Display',serif; font-size:0.7rem; font-weight:700; letter-spacing:0.32em; text-transform:uppercase; color:rgba(255,255,255,0.88); margin-bottom:0.1rem; text-align:center; }
+    .bc-main { font-family:'Playfair Display',serif; font-size:1.55rem; font-weight:900; line-height:0.96; letter-spacing:0.02em; text-transform:uppercase; color:#ffffff; text-align:center; display:block; white-space:nowrap; }
+    .bc-main.gold { color:var(--gold2); }
+    .bc-main:last-of-type { margin-bottom:0.5rem; }
+    .bc-rule { width:100%; height:1px; background:rgba(255,255,255,0.3); margin:0.35rem 0 0.45rem; }
+    .bc-sub { font-family:'Lora',serif; font-style:italic; font-size:0.58rem; line-height:1.5; color:rgba(255,255,255,0.68); text-align:center; margin-bottom:0.6rem; }
+    .bc-author { font-family:'Playfair Display',serif; font-size:0.62rem; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.85); text-align:left; }
 
     /* Floating badge */
-    .floating-badge {
-      position: absolute;
-      top: -1.5rem; right: -2rem;
-      background: var(--orange);
-      padding: 0.75rem 1rem;
-      clip-path: polygon(0 0, 100% 0, 100% 80%, 50% 100%, 0 80%);
-      text-align: center;
-      transform: rotate(8deg);
-      z-index: 10;
-      opacity: 0;
-    }
-    .badge-line1 {
-      font-size: 0.6rem; font-weight: 700;
-      letter-spacing: 0.12em; text-transform: uppercase;
-      color: white;
-    }
-    .badge-line2 {
-      font-size: 0.55rem; font-weight: 500;
-      color: rgba(255,255,255,0.8);
-    }
+    .floating-badge { position:absolute; top:-1.5rem; right:-2rem; background:var(--orange); padding:0.75rem 1rem; clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%); text-align:center; transform:rotate(8deg); z-index:10; opacity:0; }
+    .badge-line1 { font-size:0.6rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:white; }
+    .badge-line2 { font-size:0.55rem; font-weight:500; color:rgba(255,255,255,0.8); }
 
-    /* Endorsement pill */
-    .endorsement-pill {
-      position: absolute;
-      bottom: -1.5rem; left: -2rem;
-      background: rgba(17,21,32,0.95);
-      border: 1px solid var(--border);
-      backdrop-filter: blur(12px);
-      padding: 0.75rem 1.25rem;
-      display: flex; align-items: center; gap: 0.75rem;
-      z-index: 10;
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    .endorsement-dot {
-      width: 8px; height: 8px; border-radius: 50%;
-      background: var(--orange);
-      flex-shrink: 0;
-      box-shadow: 0 0 8px var(--orange);
-    }
-    .endorsement-text {
-      font-size: 0.68rem; color: var(--muted);
-      line-height: 1.3;
-    }
-    .endorsement-text strong {
-      color: var(--cream); font-weight: 600;
-      display: block;
-    }
+    /* ── MARQUEE ── */
+    .marquee-band { border-top:1px solid var(--border); border-bottom:1px solid var(--border); overflow:hidden; padding:0.85rem 0; white-space:nowrap; background:rgba(255,255,255,0.02); }
+    .marquee-track { display:inline-flex; gap:4rem; animation:marquee-scroll 30s linear infinite; }
+    .marquee-item { font-size:0.7rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); display:flex; align-items:center; gap:1rem; }
+    .marquee-item::after { content:'✦'; color:var(--orange); font-size:0.6rem; }
+    @keyframes marquee-scroll { from { transform:translateX(0); } to { transform:translateX(-50%); } }
 
-    /* ─── MARQUEE BAND ───────────────────────────────────────────── */
-    .marquee-band {
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      overflow: hidden;
-      padding: 1rem 0;
-      white-space: nowrap;
-      background: rgba(255,255,255,0.02);
-    }
-    .marquee-track {
-      display: inline-flex; gap: 4rem;
-      animation: marquee-scroll 30s linear infinite;
-    }
-    .marquee-item {
-      font-size: 0.72rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--muted);
-      display: flex; align-items: center; gap: 1rem;
-    }
-    .marquee-item::after {
-      content: '✦';
-      color: var(--orange);
-      font-size: 0.6rem;
-    }
-    @keyframes marquee-scroll {
-      from { transform: translateX(0); }
-      to { transform: translateX(-50%); }
-    }
+    /* ── SECTION SHARED ── */
+    .section-overline { font-size:0.68rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--orange); margin-bottom:1rem; display:flex; align-items:center; gap:0.75rem; }
+    .section-overline::before { font-family:'Geist Mono',monospace; font-size:0.6rem; color:rgba(200,90,58,0.5); }
+    .section-overline.n01::before { content:'01'; }
+    .section-overline.n02::before { content:'02'; }
+    .section-overline.n03::before { content:'03'; }
+    .section-overline.n04::before { content:'04'; }
+    .section-overline.n05::before { content:'05'; }
+    .section-overline.n06::before { content:'06'; }
+    .section-title { font-family:'Lora',serif; font-size:clamp(2rem,3.5vw,3.2rem); font-weight:600; line-height:1.15; letter-spacing:-0.01em; color:var(--cream); }
+    .reveal { opacity:0; transform:translateY(32px); }
 
-    /* ─── SECTION: ABOUT ─────────────────────────────────────────── */
-    #about {
-      padding: 4rem 3rem 3rem;
-      display: grid;
-      grid-template-columns: 1fr 1.2fr;
-      gap: 4rem;
-      align-items: center;
-      position: relative;
-    }
-    #about::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 1px; background: var(--border);
-    }
+    /* ── ABOUT ── */
+    #about { padding:4rem 3rem 3rem; display:grid; grid-template-columns:1fr 1.2fr; gap:4rem; align-items:start; position:relative; }
+    #about::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border); }
+    .about-quote { position:relative; padding:1.5rem 1.5rem 1.5rem 2rem; border-left:2px solid var(--orange); margin:1.5rem 0; background:rgba(200,90,58,0.04); }
+    .about-quote p { font-family:'Lora',serif; font-style:italic; font-size:1rem; line-height:1.65; color:rgba(244,237,227,0.85); }
+    .about-body { font-size:0.92rem; line-height:1.75; color:var(--muted); }
+    .about-body p + p { margin-top:1rem; }
+    .about-transform { margin-top:1.5rem; padding:1.25rem 1.5rem; background:rgba(212,148,26,0.07); border:1px solid rgba(212,148,26,0.2); }
+    .about-transform-label { font-size:0.62rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--gold); margin-bottom:0.5rem; }
+    .about-transform p { font-size:0.88rem; line-height:1.6; color:rgba(244,237,227,0.8); font-style:italic; }
+    .about-image-col { position:relative; }
+    .about-img-frame { position:relative; width:100%; aspect-ratio:4/5; overflow:hidden; background:var(--surface); }
+    .about-img-frame::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,transparent 60%,rgba(10,13,18,0.85) 100%); z-index:1; }
+    .about-photo { width:100%; height:100%; object-fit:cover; object-position:top center; display:block; filter:grayscale(15%) contrast(1.05); }
+    .about-img-caption { position:absolute; bottom:0; left:0; right:0; z-index:2; padding:1.5rem; }
+    .img-caption-name { font-size:1.05rem; font-weight:700; color:var(--cream); line-height:1; }
+    .img-caption-role { font-size:0.78rem; color:var(--muted); margin-top:0.3rem; }
+    .about-credentials { margin-top:1.25rem; display:flex; flex-direction:column; gap:0.5rem; }
+    .credential-item { display:flex; align-items:center; gap:0.6rem; font-size:0.78rem; color:var(--muted); }
+    .credential-item::before { content:''; width:5px; height:5px; border-radius:50%; background:var(--orange); flex-shrink:0; }
 
-    .about-overline {
-      font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--orange); margin-bottom: 2rem;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .about-overline::before {
-      content: '01';
-      font-size: 0.6rem; color: rgba(200,90,58,0.5);
-      font-family: 'Geist Mono', monospace;
-    }
+    /* ── CASE STUDIES ── */
+    #case-studies { padding:4rem 3rem; position:relative; background:linear-gradient(180deg,var(--ink) 0%,var(--surface) 50%,var(--ink) 100%); }
+    #case-studies::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border); }
+    .cs-header { margin-bottom:3rem; }
+    .cs-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .cs-card { background:rgba(255,255,255,0.03); border:1px solid var(--border); padding:2.5rem 2rem; position:relative; overflow:hidden; transition:border-color 0.3s,transform 0.4s var(--ease-out); cursor:none; }
+    .cs-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(200,90,58,0.06) 0%,transparent 60%); opacity:0; transition:opacity 0.3s; }
+    .cs-card:hover { border-color:rgba(200,90,58,0.4); transform:translateY(-4px); }
+    .cs-card:hover::before { opacity:1; }
+    .cs-rule-tag { display:inline-flex; align-items:center; gap:0.5rem; margin-bottom:1.5rem; }
+    .cs-rule-num { font-family:'Geist Mono',monospace; font-size:0.6rem; color:var(--orange); letter-spacing:0.1em; background:rgba(200,90,58,0.1); border:1px solid rgba(200,90,58,0.25); padding:0.2rem 0.5rem; }
+    .cs-rule-name { font-size:0.6rem; color:var(--muted); letter-spacing:0.1em; text-transform:uppercase; }
+    .cs-card h3 { font-family:'Lora',serif; font-size:1.2rem; font-weight:600; color:var(--cream); line-height:1.3; margin-bottom:0.75rem; }
+    .cs-context { font-size:0.82rem; line-height:1.6; color:var(--muted); margin-bottom:1rem; }
+    .cs-outcome { display:flex; align-items:flex-start; gap:0.6rem; padding:0.9rem; background:rgba(200,90,58,0.06); border-left:2px solid var(--orange); }
+    .cs-outcome-icon { font-size:0.75rem; color:var(--orange); font-weight:700; flex-shrink:0; margin-top:0.05rem; }
+    .cs-outcome p { font-size:0.78rem; line-height:1.5; color:rgba(244,237,227,0.75); }
+    .cs-bottom-bar { position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(to right,var(--orange),transparent); transform:scaleX(0); transform-origin:left; transition:transform 0.4s var(--ease-out); }
+    .cs-card:hover .cs-bottom-bar { transform:scaleX(1); }
 
-    .about-title {
-      font-family: 'Lora', serif;
-      font-size: clamp(2rem, 3.5vw, 3.2rem);
-      font-weight: 600;
-      line-height: 1.15;
-      letter-spacing: -0.01em;
-      color: var(--cream);
-      margin-bottom: 2rem;
-    }
+    /* ── RULES ── */
+    #rules { padding:3rem 0 4rem; position:relative; overflow:hidden; }
+    .rules-header { padding:0 3rem; display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:2rem; }
+    .rules-count { font-size:5rem; font-weight:900; color:rgba(244,237,227,0.05); font-variant-numeric:tabular-nums; line-height:1; }
+    .rules-scroll-container { overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; padding:0 3rem; padding-bottom:2rem; }
+    .rules-scroll-container::-webkit-scrollbar { display:none; }
+    .rules-track { display:flex; gap:1.25rem; width:max-content; }
+    .rule-card { width:300px; flex-shrink:0; padding:2rem; background:var(--surface); border:1px solid var(--border); position:relative; overflow:hidden; transition:border-color 0.3s,transform 0.4s var(--ease-out); cursor:none; }
+    .rule-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(200,90,58,0.05) 0%,transparent 60%); opacity:0; transition:opacity 0.3s; }
+    .rule-card:hover { border-color:rgba(200,90,58,0.4); transform:translateY(-5px); }
+    .rule-card:hover::before { opacity:1; }
+    .rule-number { font-family:'Geist Mono',monospace; font-size:0.62rem; font-weight:500; letter-spacing:0.14em; color:var(--orange); margin-bottom:1.25rem; }
+    .rule-title { font-family:'Lora',serif; font-size:1.2rem; font-weight:600; color:var(--cream); line-height:1.25; margin-bottom:0.75rem; }
+    .rule-desc { font-size:0.85rem; line-height:1.6; color:var(--muted); }
+    .rule-card-accent { position:absolute; bottom:0; left:0; right:0; height:2px; background:linear-gradient(to right,var(--orange),transparent); transform:scaleX(0); transform-origin:left; transition:transform 0.4s var(--ease-out); }
+    .rule-card:hover .rule-card-accent { transform:scaleX(1); }
 
-    .about-quote {
-      position: relative;
-      padding: 2rem 2rem 2rem 2.5rem;
-      border-left: 2px solid var(--orange);
-      margin: 2.5rem 0;
-      background: rgba(200,90,58,0.04);
-    }
-    .about-quote p {
-      font-family: 'Lora', serif;
-      font-style: italic;
-      font-size: 1.1rem; line-height: 1.65;
-      color: rgba(244,237,227,0.85);
-    }
+    /* ── WHY DIFFERENT ── */
+    #why-different { padding:4rem 3rem; position:relative; }
+    #why-different::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border); }
+    .wd-grid { display:grid; grid-template-columns:1fr 1fr; gap:5rem; align-items:center; margin-top:3rem; }
+    .wd-points { display:flex; flex-direction:column; gap:1.75rem; }
+    .wd-point { display:flex; gap:1.25rem; align-items:flex-start; }
+    .wd-num { font-family:'Geist Mono',monospace; font-size:0.65rem; color:var(--orange); background:rgba(200,90,58,0.1); border:1px solid rgba(200,90,58,0.25); width:28px; height:28px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-weight:600; margin-top:0.1rem; }
+    .wd-point-body h4 { font-size:0.95rem; font-weight:700; color:var(--cream); margin-bottom:0.35rem; }
+    .wd-point-body p { font-size:0.85rem; line-height:1.6; color:var(--muted); }
+    .wd-pullquote { padding:2.5rem 2.5rem 2.5rem 3rem; background:var(--surface); border:1px solid var(--border); border-left:3px solid var(--gold); position:relative; }
+    .wd-pullquote::before { content:'"'; position:absolute; top:1rem; left:1.5rem; font-family:'Lora',serif; font-size:4rem; color:rgba(212,148,26,0.15); line-height:1; }
+    .wd-pullquote p { font-family:'Lora',serif; font-style:italic; font-size:1.05rem; line-height:1.65; color:rgba(244,237,227,0.88); margin-bottom:1.5rem; }
+    .wd-pullquote cite { font-size:0.72rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold); font-style:normal; }
+    .wd-tag { display:inline-block; background:rgba(212,148,26,0.1); border:1px solid rgba(212,148,26,0.25); color:var(--gold); font-size:0.62rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; padding:0.35rem 0.75rem; margin-top:1rem; }
 
-    .about-body {
-      font-size: 0.95rem; line-height: 1.75;
-      color: var(--muted);
-    }
-    .about-body p + p { margin-top: 1.25rem; }
+    /* ── TESTIMONIALS ── */
+    #testimonials { padding:4rem 3rem; position:relative; background:linear-gradient(180deg,var(--ink) 0%,var(--surface) 50%,var(--ink) 100%); }
+    #testimonials::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border); }
+    .testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:3rem; }
+    .testi-card { background:rgba(255,255,255,0.025); border:1px solid var(--border); padding:2rem 1.75rem; position:relative; transition:border-color 0.3s,transform 0.3s var(--ease-out); }
+    .testi-card:hover { border-color:rgba(212,148,26,0.35); transform:translateY(-3px); }
+    .testi-quote-mark { font-family:'Lora',serif; font-size:3rem; color:rgba(212,148,26,0.2); line-height:0.8; margin-bottom:0.75rem; display:block; }
+    .testi-text { font-family:'Lora',serif; font-style:italic; font-size:0.88rem; line-height:1.7; color:rgba(244,237,227,0.82); margin-bottom:1.5rem; }
+    .testi-divider { width:32px; height:1px; background:rgba(212,148,26,0.4); margin-bottom:1rem; }
+    .testi-name { font-size:0.82rem; font-weight:700; color:var(--cream); }
+    .testi-role { font-size:0.72rem; color:var(--muted); margin-top:0.2rem; line-height:1.4; }
+    .testi-org { font-size:0.68rem; color:var(--gold); margin-top:0.1rem; font-weight:500; letter-spacing:0.05em; }
 
-    .about-image-col {
-      position: relative;
-    }
-    .about-img-frame {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 4/5;
-      overflow: hidden;
-      background: var(--surface);
-    }
-    .about-img-frame::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 60%, rgba(10,13,18,0.8) 100%);
-      z-index: 1;
-    }
-    .about-photo {
-      width: 100%; height: 100%;
-      object-fit: cover; object-position: top center;
-      display: block;
-      filter: grayscale(20%) contrast(1.05);
-    }
+    /* ── BIG QUOTE ── */
+    #quote-section { padding:4rem 3rem; position:relative; text-align:center; overflow:hidden; }
+    #quote-section::before { content:''; position:absolute; inset:0; background:linear-gradient(180deg,var(--ink) 0%,var(--surface) 50%,var(--ink) 100%); z-index:0; }
+    .big-quote { position:relative; z-index:1; max-width:800px; margin:0 auto; }
+    .quote-mark { font-size:4.5rem; line-height:0.6; font-family:'Lora',serif; color:rgba(200,90,58,0.15); display:block; margin-bottom:0.5rem; }
+    .big-quote-text { font-family:'Lora',serif; font-size:clamp(1.4rem,2.8vw,2.5rem); font-style:italic; line-height:1.45; color:var(--cream); margin-bottom:2rem; }
+    .big-quote-attr { font-size:0.78rem; font-weight:600; letter-spacing:0.14em; text-transform:uppercase; color:var(--orange); display:flex; align-items:center; justify-content:center; gap:1rem; }
+    .big-quote-attr::before, .big-quote-attr::after { content:''; display:inline-block; width:36px; height:1px; background:var(--orange); }
 
-    .about-img-caption {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      z-index: 2;
-      padding: 2rem;
-    }
-    .img-caption-name {
-      font-size: 1.1rem; font-weight: 700;
-      color: var(--cream); line-height: 1;
-    }
-    .img-caption-role {
-      font-size: 0.8rem; color: var(--muted);
-      margin-top: 0.3rem; line-height: 1.4;
-    }
+    /* ── CTA / GET THE BOOK ── */
+    #cta { padding:5rem 3rem; position:relative; overflow:hidden; }
+    #cta::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:var(--border); }
+    .cta-inner { max-width:660px; margin:0 auto; text-align:center; position:relative; z-index:1; }
+    .cta-title { font-family:'Lora',serif; font-size:clamp(2rem,3.8vw,3.2rem); font-weight:600; line-height:1.2; color:var(--cream); margin-bottom:1rem; }
+    .cta-sub { font-size:0.95rem; line-height:1.65; color:var(--muted); margin-bottom:2.5rem; max-width:50ch; margin-left:auto; margin-right:auto; }
+    .email-form { display:flex; gap:0; border:1px solid var(--border); background:rgba(255,255,255,0.03); transition:border-color 0.3s; max-width:460px; margin:0 auto 2.5rem; }
+    .email-form:focus-within { border-color:rgba(200,90,58,0.5); }
+    .email-input { flex:1; padding:1rem 1.25rem; background:transparent; border:none; font-family:'Geist',sans-serif; font-size:0.88rem; color:var(--cream); outline:none; }
+    .email-input::placeholder { color:var(--muted); }
+    .email-submit { padding:1rem 1.75rem; background:var(--orange); border:none; color:white; font-family:'Geist',sans-serif; font-size:0.78rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; cursor:none; transition:background 0.2s,transform 0.16s var(--ease-out); flex-shrink:0; }
+    .email-submit:hover { background:var(--orange2); }
+    .email-submit:active { transform:scale(0.97); }
 
-    .about-credentials {
-      position: absolute; top: -1.5rem; right: -1.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 1.25rem 1.5rem;
-      min-width: 220px;
-      z-index: 10;
-    }
-    .credential-item {
-      display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid var(--border);
-      font-size: 0.78rem; color: var(--muted);
-    }
-    .credential-item:last-child { border-bottom: none; }
-    .credential-item::before {
-      content: '';
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--orange); flex-shrink: 0;
-    }
+    .purchase-label { font-size:0.68rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--muted); margin-bottom:1rem; }
+    .purchase-channels { display:flex; align-items:center; justify-content:center; gap:1rem; flex-wrap:wrap; }
+    .purchase-chip { display:inline-flex; align-items:center; gap:0.4rem; padding:0.5rem 1rem; border:1px solid var(--border); font-size:0.75rem; font-weight:600; color:var(--muted); letter-spacing:0.04em; transition:border-color 0.2s,color 0.2s; text-decoration:none; cursor:none; }
+    .purchase-chip:hover { border-color:rgba(244,237,227,0.35); color:var(--cream); }
+    .purchase-chip .chip-dot { width:5px; height:5px; border-radius:50%; background:var(--orange); flex-shrink:0; }
+    .launch-note { font-size:0.72rem; color:var(--muted); margin-top:1.5rem; }
 
-    /* ─── SECTION: RULES ─────────────────────────────────────────── */
-    #rules {
-      padding: 3rem 0 4rem;
-      position: relative;
-      overflow: hidden;
-    }
+    /* ── FOOTER ── */
+    footer { padding:2.5rem 3rem; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
+    .footer-brand { display:flex; align-items:center; gap:0.6rem; }
+    .footer-logo-text { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(244,237,227,0.4); }
+    .footer-links { display:flex; gap:2rem; }
+    .footer-link { font-size:0.75rem; color:var(--muted); text-decoration:none; transition:color 0.2s; }
+    .footer-link:hover { color:var(--cream); }
+    .footer-copy { font-size:0.7rem; color:rgba(244,237,227,0.2); }
 
-    .rules-header {
-      padding: 0 3rem;
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 2rem;
-    }
-
-    .rules-overline {
-      font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--orange); margin-bottom: 1rem;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-    .rules-overline::before {
-      content: '02';
-      font-size: 0.6rem; color: rgba(200,90,58,0.5);
-      font-family: 'Geist Mono', monospace;
-    }
-
-    .rules-title {
-      font-family: 'Lora', serif;
-      font-size: clamp(2.2rem, 4vw, 3.8rem);
-      font-weight: 600; line-height: 1.1;
-      color: var(--cream);
-    }
-
-    .rules-count {
-      font-size: 5rem; font-weight: 900;
-      color: rgba(244,237,227,0.05);
-      font-variant-numeric: tabular-nums;
-      line-height: 1;
-    }
-
-    /* Horizontal scroll container */
-    .rules-scroll-container {
-      overflow-x: auto;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      padding: 0 3rem;
-      padding-bottom: 3rem;
-    }
-    .rules-scroll-container::-webkit-scrollbar { display: none; }
-
-    .rules-track {
-      display: flex; gap: 1.5rem;
-      width: max-content;
-    }
-
-    .rule-card {
-      width: 320px;
-      flex-shrink: 0;
-      padding: 2.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      position: relative;
-      overflow: hidden;
-      transition: border-color 0.3s, background 0.3s, transform 0.4s var(--ease-out);
-      cursor: none;
-    }
-    .rule-card::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(200,90,58,0.05) 0%, transparent 60%);
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .rule-card:hover { border-color: rgba(200,90,58,0.4); transform: translateY(-6px); }
-    .rule-card:hover::before { opacity: 1; }
-
-    .rule-number {
-      font-family: 'Geist Mono', monospace;
-      font-size: 0.65rem; font-weight: 500;
-      letter-spacing: 0.14em;
-      color: var(--orange);
-      margin-bottom: 1.5rem;
-    }
-    .rule-title {
-      font-family: 'Lora', serif;
-      font-size: 1.3rem; font-weight: 600;
-      color: var(--cream); line-height: 1.25;
-      margin-bottom: 1rem;
-    }
-    .rule-desc {
-      font-size: 0.88rem; line-height: 1.6;
-      color: var(--muted);
-    }
-    .rule-card-accent {
-      position: absolute; bottom: 0; left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(to right, var(--orange), transparent);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.4s var(--ease-out);
-    }
-    .rule-card:hover .rule-card-accent { transform: scaleX(1); }
-
-    /* ─── SECTION: QUOTE ─────────────────────────────────────────── */
-    #quote-section {
-      padding: 5rem 3rem;
-      position: relative;
-      text-align: center;
-      overflow: hidden;
-    }
-    #quote-section::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, var(--ink) 0%, var(--surface) 50%, var(--ink) 100%);
-      z-index: 0;
-    }
-
-    .big-quote {
-      position: relative; z-index: 1;
-      max-width: 900px; margin: 0 auto;
-    }
-    .quote-mark {
-      font-size: 5rem; line-height: 0.6;
-      font-family: 'Lora', serif;
-      color: rgba(200,90,58,0.15);
-      display: block; margin-bottom: 0.5rem;
-    }
-    .big-quote-text {
-      font-family: 'Lora', serif;
-      font-size: clamp(1.5rem, 3vw, 2.8rem);
-      font-style: italic;
-      line-height: 1.4;
-      color: var(--cream);
-      margin-bottom: 2.5rem;
-    }
-    .big-quote-attr {
-      font-size: 0.8rem; font-weight: 600;
-      letter-spacing: 0.14em; text-transform: uppercase;
-      color: var(--orange);
-      display: flex; align-items: center; justify-content: center; gap: 1rem;
-    }
-    .big-quote-attr::before, .big-quote-attr::after {
-      content: '';
-      display: inline-block; width: 40px; height: 1px;
-      background: var(--orange);
-    }
-
-    /* ─── SECTION: CTA ───────────────────────────────────────────── */
-    #cta {
-      padding: 5rem 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    #cta::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: var(--border);
-    }
-
-    .cta-inner {
-      max-width: 700px; margin: 0 auto;
-      text-align: center;
-      position: relative; z-index: 1;
-    }
-
-    .cta-overline {
-      font-size: 0.7rem; font-weight: 600;
-      letter-spacing: 0.18em; text-transform: uppercase;
-      color: var(--orange); margin-bottom: 2rem;
-      display: flex; align-items: center; justify-content: center; gap: 0.75rem;
-    }
-    .cta-overline::before { content: '03'; font-size: 0.6rem; color: rgba(200,90,58,0.5); font-family: 'Geist Mono', monospace; }
-
-    .cta-title {
-      font-family: 'Lora', serif;
-      font-size: clamp(2.2rem, 4vw, 3.5rem);
-      font-weight: 600; line-height: 1.15;
-      color: var(--cream); margin-bottom: 1.5rem;
-    }
-
-    .cta-sub {
-      font-size: 1rem; line-height: 1.65;
-      color: var(--muted); margin-bottom: 3.5rem;
-    }
-
-    .email-form {
-      display: flex; gap: 0;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
-      transition: border-color 0.3s;
-      max-width: 460px; margin: 0 auto;
-    }
-    .email-form:focus-within { border-color: rgba(200,90,58,0.5); }
-
-    .email-input {
-      flex: 1;
-      padding: 1rem 1.5rem;
-      background: transparent; border: none;
-      font-family: 'Geist', sans-serif;
-      font-size: 0.9rem;
-      color: var(--cream);
-      outline: none;
-    }
-    .email-input::placeholder { color: var(--muted); }
-
-    .email-submit {
-      padding: 1rem 1.75rem;
-      background: var(--orange); border: none;
-      color: white;
-      font-family: 'Geist', sans-serif;
-      font-size: 0.8rem; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      cursor: none;
-      transition: background 0.2s, transform 0.16s var(--ease-out);
-      flex-shrink: 0;
-    }
-    .email-submit:hover { background: var(--orange2); }
-    .email-submit:active { transform: scale(0.97); }
-
-    /* ─── FOOTER ─────────────────────────────────────────────────── */
-    footer {
-      padding: 3rem;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .footer-logo {
-      font-size: 0.78rem; font-weight: 600;
-      letter-spacing: 0.1em; text-transform: uppercase;
-      color: var(--muted);
-    }
-    .footer-links { display: flex; gap: 2rem; }
-    .footer-link {
-      font-size: 0.78rem; color: var(--muted);
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .footer-link:hover { color: var(--cream); }
-    .footer-copy {
-      font-size: 0.72rem; color: rgba(244,237,227,0.25);
-    }
-
-    /* ─── SCROLL PROGRESS ────────────────────────────────────────── */
-    #scroll-bar {
-      position: fixed; top: 0; left: 0; z-index: 200;
-      height: 2px;
-      background: linear-gradient(to right, var(--orange), var(--orange2));
-      transform-origin: left center;
-      transform: scaleX(0);
-    }
-
-    /* ─── REVEAL ANIMATIONS ──────────────────────────────────────── */
-    .reveal { opacity: 0; transform: translateY(32px); }
-
-    /* ─── RESPONSIVE ─────────────────────────────────────────────── */
-    @media (max-width: 900px) {
-      #hero { grid-template-columns: 1fr; padding-top: 6rem; }
-      .hero-right { margin-top: 2rem; }
-      .book-scene { width: 240px; }
-      #about { grid-template-columns: 1fr; }
-      .about-image-col { order: -1; }
-      .about-credentials { display: none; }
-      nav { padding: 1rem 1.5rem; }
-      .nav-links .nav-link { display: none; }
+    /* ── RESPONSIVE ── */
+    @media (max-width:900px) {
+      #hero { grid-template-columns:1fr; padding:5.5rem 1.5rem 2rem; }
+      .hero-right { margin-top:1rem; }
+      .book-scene { width:240px; }
+      #about { grid-template-columns:1fr; padding:3rem 1.5rem; }
+      .about-image-col { order:-1; }
+      .cs-grid { grid-template-columns:1fr; }
+      .wd-grid { grid-template-columns:1fr; gap:2.5rem; }
+      .testi-grid { grid-template-columns:1fr; }
+      nav { padding:1rem 1.5rem; }
+      .nav-links .nav-link { display:none; }
+      #case-studies,#rules,#why-different,#testimonials,#quote-section,#cta { padding-left:1.5rem; padding-right:1.5rem; }
+      .rules-header,.rules-scroll-container { padding-left:1.5rem; padding-right:1.5rem; }
+      footer { flex-direction:column; align-items:flex-start; gap:1rem; padding:2rem 1.5rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Cursor -->
   <div id="cursor-dot"></div>
   <div id="cursor-ring"></div>
-
-  <!-- Scroll progress bar -->
   <div id="scroll-bar"></div>
 
-  <!-- ── NAV ──────────────────────────────────────────────────────── -->
+  <!-- ── NAV ── -->
   <nav id="nav">
-    <a href="#" class="nav-logo">The Excellence Blueprint</a>
+    <a href="#" class="nav-brand">
+      <!-- EB Monogram -->
+      <svg class="nav-logo-mark" width="34" height="30" viewBox="0 0 34 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Grid construction lines -->
+        <line x1="0" y1="15" x2="34" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <line x1="17" y1="0" x2="17" y2="30" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <line x1="0" y1="5" x2="34" y2="5" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        <line x1="0" y1="25" x2="34" y2="25" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/>
+        <!-- E letter -->
+        <rect x="2" y="5" width="3" height="20" fill="white"/>
+        <rect x="2" y="5" width="11" height="3" fill="white"/>
+        <rect x="2" y="13.5" width="9" height="3" fill="white"/>
+        <rect x="2" y="22" width="11" height="3" fill="white"/>
+        <!-- B letter -->
+        <rect x="18" y="5" width="3" height="20" fill="white"/>
+        <rect x="18" y="5" width="8" height="3" fill="white"/>
+        <path d="M26,8 Q31,8 31,12.5 Q31,16 26,16 L21,16 L21,8 Z" fill="white"/>
+        <rect x="18" y="13.5" width="8" height="3" fill="white"/>
+        <path d="M26,16.5 Q32,16.5 32,21 Q32,25 26,25 L21,25 L21,16.5 Z" fill="white"/>
+        <rect x="18" y="22" width="8" height="3" fill="white"/>
+      </svg>
+      <div>
+        <span class="nav-logo-text">The Excellence Blueprint</span>
+        <span class="nav-logo-sub">by Rajinder Singh</span>
+      </div>
+    </a>
     <div class="nav-links">
       <a href="#about" class="nav-link">The Author</a>
       <a href="#rules" class="nav-link">25 Rules</a>
-      <a href="#cta" class="nav-link">Pre-Order</a>
-      <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
-        Notify Me
-      </button>
+      <a href="#testimonials" class="nav-link">Praise</a>
+      <a href="#cta" class="nav-link">Get the Book</a>
+      <button class="nav-cta" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Pre-Order</button>
     </div>
   </nav>
 
-  <!-- ── HERO ─────────────────────────────────────────────────────── -->
+  <!-- ── HERO ── -->
   <section id="hero">
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
 
     <div class="hero-left">
-      <div class="hero-kicker" id="hero-kicker">Manufacturing Excellence · May 2026</div>
+      <div class="hero-kicker" id="hero-kicker">Manufacturing Excellence · Publishing 2026</div>
 
       <h1 class="hero-title" id="hero-title">
-        The <em>Excellence</em><br>Blueprint
+        Your Dashboard<br>Shows Green.<br>
+        Your Floor Is <span class="gold">On Fire.</span>
       </h1>
 
-      <p class="hero-sub" id="hero-sub">
-        Forty years of shop floor wisdom, distilled into 25 unbreakable rules.
-        From factories in India, Europe, China and West Africa — to a framework
-        that transforms any operation from average to world-class.
+      <p class="hero-problem" id="hero-sub">
+        For Plant Heads, Operations Directors, and MDs trapped in the Ivory Tower Disconnect — the book that teaches you to decode the silent signals your KPIs will never show.
       </p>
 
       <div class="hero-stats" id="hero-stats">
         <div class="stat-item">
           <span class="stat-num" data-count="40">0</span>
-          <span class="stat-label">Years of wisdom</span>
+          <span class="stat-label">Years Inside</span>
         </div>
         <div class="stat-item">
           <span class="stat-num" data-count="25">0</span>
-          <span class="stat-label">Rules of excellence</span>
+          <span class="stat-label">Rules of Excellence</span>
         </div>
         <div class="stat-item">
           <span class="stat-num">4+</span>
-          <span class="stat-label">Continents covered</span>
+          <span class="stat-label">Continents</span>
         </div>
       </div>
 
       <div class="hero-actions" id="hero-actions">
-        <button class="btn-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">
-          Pre-Order Now
-        </button>
+        <button class="btn-primary" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get Notified at Launch</button>
         <button class="btn-ghost" onclick="document.getElementById('rules').scrollIntoView({behavior:'smooth'})">
-          Explore the rules
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
+          Explore the 25 Rules
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8H13M9 4L13 8L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
       </div>
     </div>
 
     <div class="hero-right">
       <div class="book-scene" id="book-scene">
-        <!-- Floating badge -->
         <div class="floating-badge" id="badge">
           <div class="badge-line1">Shingo</div>
           <div class="badge-line2">Endorsed</div>
         </div>
 
-        <!-- Book -->
         <div class="book-3d" id="book-3d">
           <div class="book-cover-face">
             <div class="book-inner-border">
-
-              <!-- Blueprint icon — faithful recreation of actual book cover -->
               <div class="book-icon-area">
-                <svg viewBox="0 0 280 215" fill="none" xmlns="http://www.w3.org/2000/svg"
-                  stroke="rgba(255,255,255,0.75)" stroke-linecap="round" stroke-linejoin="round">
-
-                  <!-- ── BLUEPRINT SCROLL (background) ──
-                       Landscape rectangle with cylindrical rolled RIGHT edge,
-                       flat left edge — like a blueprint unrolled from the right -->
-                  <!-- Main flat paper body -->
-                  <path d="M12,55 L12,185 Q12,195 22,195 L198,195 Q198,195 198,195 L198,55 Q198,55 198,55 L22,55 Q12,55 12,55 Z" stroke-width="2"/>
-                  <!-- Rolled right edge (cylinder) -->
+                <svg viewBox="0 0 280 215" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="rgba(255,255,255,0.75)" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12,55 L12,185 Q12,195 22,195 L198,195 L198,55 L22,55 Z" stroke-width="2"/>
                   <ellipse cx="198" cy="125" rx="12" ry="70" stroke-width="2"/>
-                  <!-- Inner ellipse of roll showing depth -->
                   <ellipse cx="198" cy="125" rx="5" ry="62" stroke-width="1.2" stroke-dasharray="3,3"/>
-                  <!-- Blueprint dashed lines on paper -->
                   <line x1="28" y1="138" x2="182" y2="138" stroke-width="1.2" stroke-dasharray="6,5"/>
                   <line x1="28" y1="158" x2="165" y2="158" stroke-width="1.2" stroke-dasharray="6,5"/>
                   <line x1="28" y1="178" x2="175" y2="178" stroke-width="1.2" stroke-dasharray="6,5"/>
-
-                  <!-- ── THREE UPWARD ARROWS (close-grouped, mostly vertical) ── -->
-                  <!-- Arrow 1 (left) — slight left lean -->
                   <line x1="75"  y1="200" x2="52"  y2="22" stroke-width="2.8"/>
-                  <polyline points="40,44 51,16 66,40"  stroke-width="2.8" fill="none"/>
-
-                  <!-- Arrow 2 (center) — straight up, tallest -->
+                  <polyline points="40,44 51,16 66,40" stroke-width="2.8" fill="none"/>
                   <line x1="110" y1="200" x2="110" y2="10" stroke-width="2.8"/>
-                  <polyline points="98,32 110,6 122,32"  stroke-width="2.8" fill="none"/>
-
-                  <!-- Arrow 3 (right) — slight right lean -->
+                  <polyline points="98,32 110,6 122,32" stroke-width="2.8" fill="none"/>
                   <line x1="145" y1="200" x2="168" y2="22" stroke-width="2.8"/>
                   <polyline points="154,40 169,16 180,44" stroke-width="2.8" fill="none"/>
-
-                  <!-- ── GEAR WHEEL (right of scroll, overlapping) ── -->
                   <circle cx="238" cy="112" r="30" stroke-width="2.4"/>
                   <circle cx="238" cy="112" r="13" stroke-width="2.4"/>
-                  <!-- 8 gear teeth using paths for clean look -->
-                  <!-- Top -->
                   <rect x="231" y="78"  width="14" height="10" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <!-- Bottom -->
                   <rect x="231" y="136" width="14" height="10" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <!-- Left -->
                   <rect x="204" y="105" width="10" height="14" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <!-- Right -->
                   <rect x="264" y="105" width="10" height="14" rx="2.5" stroke-width="1.8" fill="#344d78"/>
-                  <!-- Top-left diagonal -->
                   <rect x="211" y="84"  width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(45 216 89)"/>
-                  <!-- Top-right diagonal -->
                   <rect x="255" y="84"  width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(-45 260 89)"/>
-                  <!-- Bottom-left diagonal -->
                   <rect x="211" y="130" width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(-45 216 135)"/>
-                  <!-- Bottom-right diagonal -->
                   <rect x="255" y="130" width="10" height="10" rx="2" stroke-width="1.8" fill="#344d78" transform="rotate(45 260 135)"/>
                 </svg>
               </div>
-
-              <!-- Text area -->
               <div class="book-text-area">
                 <div>
                   <p class="bc-the">The</p>
                   <span class="bc-main">Excellence</span>
-                  <span class="bc-main">Blueprint</span>
+                  <span class="bc-main gold">Blueprint</span>
                   <div class="bc-rule"></div>
                   <p class="bc-sub">From Shop Floor to Cloud:<br>Analog Wisdom for a Digital Age</p>
                   <p class="bc-author">Rajinder Singh</p>
                 </div>
               </div>
-
-            </div><!-- /inner-border -->
+            </div>
           </div>
           <div class="book-spine"></div>
         </div>
-
       </div>
     </div>
   </section>
 
-  <!-- ── MARQUEE BAND ──────────────────────────────────────────────── -->
+  <!-- ── MARQUEE ── -->
   <div class="marquee-band">
     <div class="marquee-track">
       <span class="marquee-item">25 Rules of Excellence</span>
@@ -1019,50 +422,50 @@
       <span class="marquee-item">EFESO Consulting</span>
       <span class="marquee-item">Shingo Institute</span>
       <span class="marquee-item">40 Years of Wisdom</span>
-      <span class="marquee-item">Manufacturing Excellence</span>
-      <span class="marquee-item">Publishing May 2026</span>
-      <!-- duplicate for seamless loop -->
+      <span class="marquee-item">Notion Press</span>
+      <span class="marquee-item">Business Narrative</span>
       <span class="marquee-item">25 Rules of Excellence</span>
       <span class="marquee-item">Shop Floor to Cloud</span>
       <span class="marquee-item">IIT Roorkee</span>
       <span class="marquee-item">EFESO Consulting</span>
       <span class="marquee-item">Shingo Institute</span>
       <span class="marquee-item">40 Years of Wisdom</span>
-      <span class="marquee-item">Manufacturing Excellence</span>
-      <span class="marquee-item">Publishing May 2026</span>
+      <span class="marquee-item">Notion Press</span>
+      <span class="marquee-item">Business Narrative</span>
     </div>
   </div>
 
-  <!-- ── ABOUT ─────────────────────────────────────────────────────── -->
+  <!-- ── 01: ABOUT ── -->
   <section id="about">
     <div class="about-left">
-      <div class="about-overline reveal">The Author</div>
-      <h2 class="about-title reveal">Four decades on the factory floor. One enduring truth.</h2>
+      <div class="section-overline n01 reveal">The Author</div>
+      <h2 class="section-title reveal">Four decades inside the industrial inferno.</h2>
 
       <div class="about-quote reveal">
-        <p>"The most sophisticated strategies fail. The simplest truths endure. Excellence is not a destination — it is a daily discipline."</p>
+        <p>"Most books on manufacturing are written by observers looking in. This one is written by someone who spent 40 years standing inside the furnace."</p>
       </div>
 
       <div class="about-body reveal">
-        <p>Rajinder Singh has spent 40 years transforming manufacturing operations across India, Europe, China, and West Africa. As Partner &amp; MD at EFESO Consulting India, he has led turnarounds in some of the world's most demanding production environments.</p>
-        <p>A graduate of IIT Roorkee with a Shingo Institute recognition to his name, Rajinder distilled four decades of hard-won insight into 25 rules that any leader — whether on a factory floor or in a boardroom — can apply immediately.</p>
+        <p>Rajinder Singh has led operational turnarounds across India, Europe, China, and West Africa. As Partner &amp; MD at EFESO Consulting India and a graduate of IIT Roorkee, he has stood inside the factories others only study from the outside.</p>
+        <p>His book follows Adi, a protagonist navigating the messy, political, profoundly human reality of manufacturing excellence — a narrative that lets leaders feel the emotional truth of a turnaround, not just its methodology.</p>
+      </div>
+
+      <div class="about-transform reveal">
+        <div class="about-transform-label">The Transformation</div>
+        <p>After reading this book, a manufacturing leader will be able to decode the silent signals of their operations, identify their cognitive knowledge thresholds, and design human-centric systems that permanently eliminate recurring failures — rather than just firefighting symptoms.</p>
+      </div>
+
+      <div class="about-credentials reveal">
+        <div class="credential-item">IIT Roorkee Graduate</div>
+        <div class="credential-item">Shingo Institute Recognised</div>
+        <div class="credential-item">EFESO Consulting — Partner &amp; MD, India</div>
+        <div class="credential-item">Operations in India, Europe, China, West Africa</div>
       </div>
     </div>
 
     <div class="about-image-col reveal">
-      <div class="about-credentials">
-        <div class="credential-item">IIT Roorkee Graduate</div>
-        <div class="credential-item">Shingo Institute Recognized</div>
-        <div class="credential-item">EFESO Partner &amp; MD, India</div>
-        <div class="credential-item">40+ Years Global Experience</div>
-      </div>
-
       <div class="about-img-frame">
-        <img
-          class="about-photo"
-          src="rajinder.jpg"
-          alt="Rajinder Singh"
-        />
+        <img class="about-photo" src="rajinder.jpg" alt="Rajinder Singh"/>
         <div class="about-img-caption">
           <div class="img-caption-name">Rajinder Singh</div>
           <div class="img-caption-role">Partner &amp; MD · EFESO Consulting India</div>
@@ -1071,110 +474,207 @@
     </div>
   </section>
 
-  <!-- ── RULES ─────────────────────────────────────────────────────── -->
+  <!-- ── 02: CASE STUDIES ── -->
+  <section id="case-studies">
+    <div class="cs-header">
+      <div class="section-overline n02 reveal">From the Field</div>
+      <h2 class="section-title reveal">Three Rules.<br>Three Turning Points.</h2>
+    </div>
+
+    <div class="cs-grid">
+      <div class="cs-card reveal">
+        <div class="cs-rule-tag">
+          <span class="cs-rule-num">Rule #10</span>
+          <span class="cs-rule-name">The Law of Relations</span>
+        </div>
+        <h3>The Day the Line Stood Still</h3>
+        <p class="cs-context">A top operator was reassigned based purely on spreadsheet data — no human consultation. A silent revolt followed: production dropped 30% overnight. Senior management couldn't understand why their "data-driven" decision had failed.</p>
+        <div class="cs-outcome">
+          <span class="cs-outcome-icon">→</span>
+          <p>Applying <em>Buffalo Logic</em> — visiting the worker's home, restoring dignity — dissolved the human bottleneck. Full production stability returned within days.</p>
+        </div>
+        <div class="cs-bottom-bar"></div>
+      </div>
+
+      <div class="cs-card reveal">
+        <div class="cs-rule-tag">
+          <span class="cs-rule-num">Rule #16</span>
+          <span class="cs-rule-name">The Plastic Brain</span>
+        </div>
+        <h3>The Mystery of Line 4</h3>
+        <p class="cs-context">Skyrocketing scrap rates and continuous line stoppages on a precision line. Senior management was certain the cause was operator negligence. Teams had been pressured, audited, and retrained — nothing changed.</p>
+        <div class="cs-outcome">
+          <span class="cs-outcome-icon">→</span>
+          <p>Microscopic stroboscope verification revealed a systemic chip-breaker <em>engineering defect</em>. The culture shifted from instinctive blame to rigorous experimentation — permanently.</p>
+        </div>
+        <div class="cs-bottom-bar"></div>
+      </div>
+
+      <div class="cs-card reveal">
+        <div class="cs-rule-tag">
+          <span class="cs-rule-num">Rule #11</span>
+          <span class="cs-rule-name">The Law of Simplicity</span>
+        </div>
+        <h3>Beating Robots with Gravity</h3>
+        <p class="cs-context">A plant facing pressure to invest millions in robotics to solve a material transport bottleneck. Capital constraints threatened to stall operational progress. The team felt trapped between technology and budget.</p>
+        <div class="cs-outcome">
+          <span class="cs-outcome-icon">→</span>
+          <p>Simple gravity chutes and low-cost Karakuri automation delivered <em>identical throughput</em> — at near-zero investment. ECRS thinking solved in weeks what robotics would have taken 18 months to deploy.</p>
+        </div>
+        <div class="cs-bottom-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 03: THE 25 RULES ── -->
   <section id="rules">
     <div class="rules-header">
       <div>
-        <div class="rules-overline reveal">The 25 Rules</div>
-        <h2 class="rules-title reveal">Excellence<br>Distilled</h2>
+        <div class="section-overline n03 reveal">The 25 Rules</div>
+        <h2 class="section-title reveal">Excellence<br>Distilled</h2>
       </div>
       <div class="rules-count reveal">25</div>
     </div>
-
     <div class="rules-scroll-container" id="rules-scroll">
-      <div class="rules-track" id="rules-track">
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 04</div>
-          <h3 class="rule-title">Listen to the Whisper</h3>
-          <p class="rule-desc">Machines and people warn before they fail. Excellence begins not with intervention, but with listening — before the shout becomes a crisis.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 08</div>
-          <h3 class="rule-title">The First 5 Minutes</h3>
-          <p class="rule-desc">How a leader starts a shift defines its outcome. The first five minutes set the tone for everything that follows. There are no neutral beginnings.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 12</div>
-          <h3 class="rule-title">The Law of Dignity</h3>
-          <p class="rule-desc">You cannot build world-class products with a second-class culture. Dignity is not a soft metric — it is the foundation on which all operational excellence rests.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 13</div>
-          <h3 class="rule-title">The Law of Deviation</h3>
-          <p class="rule-desc">Excellence is not about staying within tolerance. It is the relentless pursuit of the bullseye. Tolerance thinking produces average outcomes by design.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 14</div>
-          <h3 class="rule-title">The Vector Law</h3>
-          <p class="rule-desc">A thousand improvements in a thousand directions equals zero net progress. Direction matters more than effort. Alignment is the true multiplier of excellence.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 16</div>
-          <h3 class="rule-title">The Plastic Brain</h3>
-          <p class="rule-desc">Stay on the right side of the knowledge threshold before drawing conclusions. The most dangerous moment is when you think you know enough.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 19</div>
-          <h3 class="rule-title">The Invisible Factory</h3>
-          <p class="rule-desc">The processes you cannot see govern the ones you can. Excellence requires mapping the invisible — the conversations, incentives, and assumptions beneath the surface.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
-        <div class="rule-card">
-          <div class="rule-number">Rule · 24</div>
-          <h3 class="rule-title">Technology Multiplier</h3>
-          <p class="rule-desc">Wisdom × Technology = Impact. Zero wisdom multiplied by AI remains zero. Technology amplifies what already exists — never creates what does not.</p>
-          <div class="rule-card-accent"></div>
-        </div>
-
+      <div class="rules-track">
+        <div class="rule-card"><div class="rule-number">Rule · 04</div><h3 class="rule-title">Listen to the Whisper</h3><p class="rule-desc">Machines and people warn before they fail. Excellence begins not with intervention, but with listening — before the shout becomes a crisis.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 08</div><h3 class="rule-title">The First 5 Minutes</h3><p class="rule-desc">How a leader starts a shift defines its outcome. The first five minutes set the tone for everything that follows. There are no neutral beginnings.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 10</div><h3 class="rule-title">The Law of Relations</h3><p class="rule-desc">You cannot manage people like spreadsheet rows. The informal social contract between a leader and their team is the true operating system of any plant.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 11</div><h3 class="rule-title">The Law of Simplicity</h3><p class="rule-desc">Before you automate, eliminate. Before you invest, question. The most powerful solutions are often built from gravity, geometry, and common sense.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 12</div><h3 class="rule-title">The Law of Dignity</h3><p class="rule-desc">You cannot build world-class products with a second-class culture. Dignity is not a soft metric — it is the foundation on which all operational excellence rests.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 13</div><h3 class="rule-title">The Law of Deviation</h3><p class="rule-desc">Excellence is not about staying within tolerance. It is the relentless pursuit of the bullseye. Tolerance thinking produces average outcomes by design.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 14</div><h3 class="rule-title">The Vector Law</h3><p class="rule-desc">A thousand improvements in a thousand directions equals zero net progress. Direction matters more than effort. Alignment is the true multiplier of excellence.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 16</div><h3 class="rule-title">The Plastic Brain</h3><p class="rule-desc">Stay on the right side of the knowledge threshold before drawing conclusions. The most dangerous moment is when you think you know enough.</p><div class="rule-card-accent"></div></div>
+        <div class="rule-card"><div class="rule-number">Rule · 24</div><h3 class="rule-title">Technology Multiplier</h3><p class="rule-desc">Wisdom × Technology = Impact. Zero wisdom multiplied by AI remains zero. Technology amplifies what already exists — it never creates what does not.</p><div class="rule-card-accent"></div></div>
       </div>
     </div>
   </section>
 
-  <!-- ── BIG QUOTE ─────────────────────────────────────────────────── -->
+  <!-- ── 04: WHY DIFFERENT ── -->
+  <section id="why-different">
+    <div class="section-overline n04 reveal">Why This Book</div>
+    <h2 class="section-title reveal">Not a textbook.<br>A memoir from inside the machine.</h2>
+
+    <div class="wd-grid">
+      <div class="wd-points">
+        <div class="wd-point reveal">
+          <div class="wd-num">01</div>
+          <div class="wd-point-body">
+            <h4>Written from inside the furnace</h4>
+            <p>The Toyota Way and Lean Thinking are outstanding — written by academics and observers looking in. The Excellence Blueprint is written by an executive who spent 40 years standing inside the industrial inferno, not studying it from outside.</p>
+          </div>
+        </div>
+        <div class="wd-point reveal">
+          <div class="wd-num">02</div>
+          <div class="wd-point-body">
+            <h4>A narrative, not a framework</h4>
+            <p>The book follows Adi, a protagonist navigating real operational turnarounds. You don't just read the rules — you feel the politics, the emotions, and the human variables behind every manufacturing crisis and breakthrough.</p>
+          </div>
+        </div>
+        <div class="wd-point reveal">
+          <div class="wd-num">03</div>
+          <div class="wd-point-body">
+            <h4>Technology is a multiplier, not a solution</h4>
+            <p>Most books treat excellence as a technology equation. This book proves that Industry 4.0, AI, and digital twins are multipliers — and that multiplying zero human wisdom by any technology still yields zero.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="wd-pullquote reveal">
+        <p>"Digital technologies and AI can improve performance, but they cannot replace shop floor experience and domain expertise. Rajinder Singh's journey from the Red Books to the Excellence Blueprint is a masterclass in building a strong, adaptable organization."</p>
+        <cite>Shyam Bang</cite>
+        <div style="font-size:0.72rem;color:var(--muted);margin-top:0.25rem;">Chairman, FICCI Committee for Manufacturing Excellence</div>
+        <div class="wd-tag">FICCI Endorsed</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 05: TESTIMONIALS ── -->
+  <section id="testimonials">
+    <div class="section-overline n05 reveal">Advance Praise</div>
+    <h2 class="section-title reveal">What industry leaders<br>are saying</h2>
+
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">A great book! The 'Rules' learned along the way build on each other powerfully. Rajinder Singh's references to the Shingo Model resonate deeply with the foundational principles of operational excellence — it is an authentic and impactful guide.</p>
+        <div class="testi-divider"></div>
+        <div class="testi-name">Ken Snyder</div>
+        <div class="testi-role">Executive Director</div>
+        <div class="testi-org">Shingo Institute · Utah State University, USA</div>
+      </div>
+
+      <div class="testi-card reveal">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">Some books instruct. A few books illuminate. The Excellence Blueprint does both. It tells the truth about industry as it is — messy, imperfect, unpredictable — and shows how mastery emerges not through shortcuts, but through patience, clarity, and humility.</p>
+        <div class="testi-divider"></div>
+        <div class="testi-name">Bruno Machiels</div>
+        <div class="testi-role">Co-CEO</div>
+        <div class="testi-org">EFESO Management Consultants · France</div>
+      </div>
+
+      <div class="testi-card reveal">
+        <span class="testi-quote-mark">"</span>
+        <p class="testi-text">Digital technologies and AI can improve performance, but they cannot replace shop floor experience and domain expertise. Rajinder Singh's journey from the Red Books to the Excellence Blueprint is a masterclass in building a strong, adaptable organization.</p>
+        <div class="testi-divider"></div>
+        <div class="testi-name">Shyam Bang</div>
+        <div class="testi-role">Chairman</div>
+        <div class="testi-org">FICCI Committee for Manufacturing Excellence</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── BIG QUOTE ── -->
   <section id="quote-section">
     <div class="big-quote">
       <span class="quote-mark reveal">"</span>
-      <p class="big-quote-text reveal">
-        The most sophisticated strategies fail.<br>
-        The simplest truths endure.
-      </p>
-      <div class="big-quote-attr reveal">
-        Rajinder Singh
-      </div>
+      <p class="big-quote-text reveal">The most sophisticated strategies fail.<br>The simplest truths endure.</p>
+      <div class="big-quote-attr reveal">Rajinder Singh</div>
     </div>
   </section>
 
-  <!-- ── CTA ───────────────────────────────────────────────────────── -->
+  <!-- ── 06: GET THE BOOK ── -->
   <section id="cta">
     <div class="cta-inner">
-      <div class="cta-overline reveal">Get Notified</div>
-      <h2 class="cta-title reveal">The book that changes how you lead operations.</h2>
-      <p class="cta-sub reveal">Publishing May 2026. Be the first to know when The Excellence Blueprint is available from major international publishers.</p>
+      <div class="section-overline n06 reveal" style="justify-content:center;">Get the Book</div>
+      <h2 class="cta-title reveal">Join the Executive<br>Blueprint Circle</h2>
+      <p class="cta-sub reveal">Get exclusive pre-launch chapters and be first in line when the print edition drops on Amazon, Flipkart, and Notion Press.</p>
 
       <form class="email-form reveal" id="email-form" onsubmit="handleSubmit(event)">
-        <input type="email" class="email-input" placeholder="your@email.com" required id="email-input" />
-        <button type="submit" class="email-submit" id="submit-btn">Notify Me</button>
+        <input type="email" class="email-input" placeholder="your@email.com" required id="email-input"/>
+        <button type="submit" class="email-submit" id="submit-btn">Join Now</button>
       </form>
+
+      <p class="purchase-label reveal">Available at launch on</p>
+      <div class="purchase-channels reveal">
+        <span class="purchase-chip"><span class="chip-dot"></span>Notion Press</span>
+        <span class="purchase-chip"><span class="chip-dot"></span>Amazon India</span>
+        <span class="purchase-chip"><span class="chip-dot"></span>Amazon US / UK</span>
+        <span class="purchase-chip"><span class="chip-dot"></span>Flipkart</span>
+      </div>
+      <p class="launch-note reveal">Publishing 2026 · Notion Press</p>
     </div>
   </section>
 
-  <!-- ── FOOTER ────────────────────────────────────────────────────── -->
+  <!-- ── FOOTER ── -->
   <footer>
-    <div class="footer-logo">The Excellence Blueprint</div>
+    <div class="footer-brand">
+      <svg width="24" height="22" viewBox="0 0 34 30" fill="none">
+        <line x1="0" y1="15" x2="34" y2="15" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <line x1="17" y1="0" x2="17" y2="30" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <rect x="2" y="5" width="3" height="20" fill="rgba(244,237,227,0.4)"/>
+        <rect x="2" y="5" width="11" height="3" fill="rgba(244,237,227,0.4)"/>
+        <rect x="2" y="13.5" width="9" height="3" fill="rgba(244,237,227,0.4)"/>
+        <rect x="2" y="22" width="11" height="3" fill="rgba(244,237,227,0.4)"/>
+        <rect x="18" y="5" width="3" height="20" fill="rgba(244,237,227,0.4)"/>
+        <rect x="18" y="5" width="8" height="3" fill="rgba(244,237,227,0.4)"/>
+        <path d="M26,8 Q31,8 31,12.5 Q31,16 26,16 L21,16 L21,8 Z" fill="rgba(244,237,227,0.4)"/>
+        <rect x="18" y="13.5" width="8" height="3" fill="rgba(244,237,227,0.4)"/>
+        <path d="M26,16.5 Q32,16.5 32,21 Q32,25 26,25 L21,25 L21,16.5 Z" fill="rgba(244,237,227,0.4)"/>
+        <rect x="18" y="22" width="8" height="3" fill="rgba(244,237,227,0.4)"/>
+      </svg>
+      <span class="footer-logo-text">The Excellence Blueprint</span>
+    </div>
     <div class="footer-links">
       <a href="https://linkedin.com/in/srajinder" target="_blank" class="footer-link">LinkedIn</a>
       <a href="https://instagram.com/theexcellenceblueprint" target="_blank" class="footer-link">Instagram</a>
@@ -1182,224 +682,99 @@
     <div class="footer-copy">&copy; 2026 Rajinder Singh. All rights reserved.</div>
   </footer>
 
-
   <script>
     gsap.registerPlugin(ScrollTrigger);
 
-    // ── LENIS SMOOTH SCROLL ────────────────────────────────────────
-    const lenis = new Lenis({
-      duration: 1.4,
-      easing: t => 1 - Math.pow(1 - t, 4),
-      smooth: true,
-    });
-
+    // Lenis smooth scroll
+    const lenis = new Lenis({ duration:1.4, easing: t => 1 - Math.pow(1-t,4), smooth:true });
     lenis.on('scroll', ScrollTrigger.update);
-
-    gsap.ticker.add(time => { lenis.raf(time * 1000); });
+    gsap.ticker.add(time => { lenis.raf(time*1000); });
     gsap.ticker.lagSmoothing(0);
 
-    // ── CURSOR ─────────────────────────────────────────────────────
-    const cursorDot  = document.getElementById('cursor-dot');
+    // Cursor
+    const cursorDot = document.getElementById('cursor-dot');
     const cursorRing = document.getElementById('cursor-ring');
-    let mx = 0, my = 0, rx = 0, ry = 0;
+    let mx=0, my=0, rx=0, ry=0;
+    window.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+    (function animCursor() {
+      gsap.to(cursorDot, { x:mx, y:my, duration:0.12, ease:'power2.out' });
+      rx += (mx-rx)*0.14; ry += (my-ry)*0.14;
+      gsap.set(cursorRing, { x:rx, y:ry });
+      requestAnimationFrame(animCursor);
+    })();
 
-    window.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-
-    function animateCursor() {
-      // Dot: snaps to mouse
-      gsap.to(cursorDot, { x: mx, y: my, duration: 0.12, ease: 'power2.out' });
-      // Ring: lags behind
-      rx += (mx - rx) * 0.14;
-      ry += (my - ry) * 0.14;
-      gsap.set(cursorRing, { x: rx, y: ry });
-      requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // ── SCROLL PROGRESS BAR ────────────────────────────────────────
+    // Scroll bar
     const scrollBar = document.getElementById('scroll-bar');
-    lenis.on('scroll', ({ progress }) => {
-      scrollBar.style.transform = `scaleX(${progress})`;
-    });
+    lenis.on('scroll', ({ progress }) => { scrollBar.style.transform = `scaleX(${progress})`; });
 
-    // ── NAV SCROLL STATE ───────────────────────────────────────────
-    ScrollTrigger.create({
-      start: 'top -80',
-      onEnter: () => document.getElementById('nav').classList.add('scrolled'),
-      onLeaveBack: () => document.getElementById('nav').classList.remove('scrolled'),
-    });
+    // Nav scroll state
+    ScrollTrigger.create({ start:'top -80', onEnter:() => document.getElementById('nav').classList.add('scrolled'), onLeaveBack:() => document.getElementById('nav').classList.remove('scrolled') });
 
-    // ── HERO ENTRANCE ──────────────────────────────────────────────
-    const tl = gsap.timeline({ defaults: { ease: 'power4.out' } });
+    // Hero entrance
+    const tl = gsap.timeline({ defaults:{ ease:'power4.out' } });
+    tl.from('#hero-kicker', { opacity:0, y:20, duration:0.7, delay:0.2 })
+      .from('#hero-title',  { opacity:0, y:48, duration:1 }, '-=0.3')
+      .to('#hero-sub',      { opacity:1, duration:0.8 }, '-=0.5')
+      .to('#hero-stats',    { opacity:1, duration:0.6 }, '-=0.4')
+      .to('#hero-actions',  { opacity:1, duration:0.6 }, '-=0.4')
+      .from('#book-3d',     { opacity:0, y:60, rotateY:-30, duration:1.2, ease:'power3.out' }, '-=0.8')
+      .to('#badge',         { opacity:1, duration:0.5, ease:'back.out(2)' }, '-=0.4');
 
-    tl.from('#hero-kicker', { opacity: 0, y: 20, duration: 0.7, delay: 0.2 })
-      .from('#hero-title',  { opacity: 0, y: 48, duration: 1,   }, '-=0.3')
-      .to('#hero-sub',      { opacity: 1, y: 0, duration: 0.8,  }, '-=0.5')
-      .to('#hero-stats',    { opacity: 1, y: 0, duration: 0.6,  }, '-=0.4')
-      .to('#hero-actions',  { opacity: 1, y: 0, duration: 0.6,  }, '-=0.4')
-      .from('#book-3d',     { opacity: 0, y: 60, rotateY: -30, duration: 1.2, ease: 'power3.out' }, '-=0.8')
-      .to('#badge',         { opacity: 1, duration: 0.5, ease: 'back.out(2)' }, '-=0.4')
-
-    // ── COUNTER ANIMATION ──────────────────────────────────────────
+    // Counters
     document.querySelectorAll('[data-count]').forEach(el => {
       const target = +el.dataset.count;
-      gsap.fromTo(el,
-        { textContent: '0' },
-        {
-          textContent: target,
-          duration: 1.5,
-          delay: 1.2,
-          ease: 'power2.out',
-          snap: { textContent: 1 },
-          onUpdate() { el.textContent = Math.round(+el.textContent); }
-        }
-      );
+      gsap.fromTo(el, { textContent:'0' }, { textContent:target, duration:1.5, delay:1.2, ease:'power2.out', snap:{ textContent:1 }, onUpdate() { el.textContent = Math.round(+el.textContent); } });
     });
 
-    // ── 3D BOOK COVER TILT ─────────────────────────────────────────
+    // 3D book tilt
     const bookScene = document.getElementById('book-scene');
-    const book3d    = document.getElementById('book-3d');
-
+    const book3d = document.getElementById('book-3d');
     bookScene.addEventListener('mousemove', e => {
-      const r  = bookScene.getBoundingClientRect();
-      const nx = (e.clientX - r.left) / r.width  - 0.5;  // -0.5 to 0.5
-      const ny = (e.clientY - r.top)  / r.height - 0.5;
-
-      gsap.to(book3d, {
-        rotateY: nx * 25,
-        rotateX: -ny * 15,
-        duration: 0.6,
-        ease: 'power2.out',
-        transformPerspective: 1400,
-        transformStyle: 'preserve-3d',
-      });
+      const r = bookScene.getBoundingClientRect();
+      const nx = (e.clientX - r.left)/r.width  - 0.5;
+      const ny = (e.clientY - r.top) /r.height - 0.5;
+      gsap.to(book3d, { rotateY:nx*25, rotateX:-ny*15, duration:0.6, ease:'power2.out', transformPerspective:1400, transformStyle:'preserve-3d' });
     });
+    bookScene.addEventListener('mouseleave', () => { gsap.to(book3d, { rotateY:-15, rotateX:5, duration:1, ease:'elastic.out(1,0.5)' }); });
 
-    bookScene.addEventListener('mouseleave', () => {
-      gsap.to(book3d, {
-        rotateY: -15, rotateX: 5,
-        duration: 1.0, ease: 'elastic.out(1, 0.5)',
-      });
+    // Hero parallax
+    gsap.to('.hero-right', { scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:0.8 }, y:-80 });
+    gsap.to('.hero-left',  { scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:1.2 }, y:-40 });
+    gsap.to('.orb-1',      { scrollTrigger:{ trigger:'#hero', start:'top top', end:'bottom top', scrub:1.5 }, y:-120, x:-60 });
+
+    // Scroll reveals
+    document.querySelectorAll('.reveal').forEach((el,i) => {
+      gsap.fromTo(el, { opacity:0, y:36 }, { opacity:1, y:0, duration:0.85, ease:'power3.out', scrollTrigger:{ trigger:el, start:'top 88%', once:true }, delay:(i%3)*0.07 });
     });
 
-    // ── HERO PARALLAX ──────────────────────────────────────────────
-    gsap.to('.hero-right', {
-      scrollTrigger: {
-        trigger: '#hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.8,
-      },
-      y: -80,
-    });
-    gsap.to('.hero-left', {
-      scrollTrigger: {
-        trigger: '#hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.2,
-      },
-      y: -40,
-    });
-    gsap.to('.orb-1', {
-      scrollTrigger: {
-        trigger: '#hero',
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 1.5,
-      },
-      y: -120, x: -60,
-    });
+    // Rule cards stagger
+    gsap.from('.rule-card', { opacity:0, x:40, duration:0.7, ease:'power3.out', stagger:0.08, scrollTrigger:{ trigger:'#rules-scroll', start:'top 80%', once:true } });
 
-    // ── SCROLL REVEALS ─────────────────────────────────────────────
-    document.querySelectorAll('.reveal').forEach((el, i) => {
-      gsap.fromTo(el,
-        { opacity: 0, y: 40 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: el,
-            start: 'top 88%',
-            once: true,
-          },
-          delay: (i % 3) * 0.08,
-        }
-      );
-    });
+    // About photo parallax
+    gsap.to('.about-img-frame img', { scrollTrigger:{ trigger:'#about', start:'top bottom', end:'bottom top', scrub:1.2 }, y:-50, scale:1.04 });
 
-    // ── RULE CARDS — staggered reveal ─────────────────────────────
-    gsap.from('.rule-card', {
-      opacity: 0,
-      x: 40,
-      duration: 0.7,
-      ease: 'power3.out',
-      stagger: 0.08,
-      scrollTrigger: {
-        trigger: '#rules-scroll',
-        start: 'top 80%',
-        once: true,
-      },
-    });
+    // Quote clip-path reveal
+    gsap.from('#quote-section .big-quote-text', { clipPath:'inset(0 100% 0 0)', duration:1.4, ease:'power4.inOut', scrollTrigger:{ trigger:'#quote-section', start:'top 70%', once:true } });
 
-    // ── MAGNETIC BUTTON EFFECT ─────────────────────────────────────
-    document.querySelectorAll('.btn-primary, .btn-ghost, .nav-cta, .email-submit').forEach(btn => {
+    // Magnetic buttons
+    document.querySelectorAll('.btn-primary,.btn-ghost,.nav-cta,.email-submit').forEach(btn => {
       btn.addEventListener('mousemove', e => {
         const r = btn.getBoundingClientRect();
-        const cx = r.left + r.width  / 2;
-        const cy = r.top  + r.height / 2;
-        const dx = (e.clientX - cx) * 0.28;
-        const dy = (e.clientY - cy) * 0.28;
-        gsap.to(btn, { x: dx, y: dy, duration: 0.35, ease: 'power2.out' });
+        gsap.to(btn, { x:(e.clientX-r.left-r.width/2)*0.28, y:(e.clientY-r.top-r.height/2)*0.28, duration:0.35, ease:'power2.out' });
       });
-      btn.addEventListener('mouseleave', () => {
-        gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1,0.5)' });
-      });
+      btn.addEventListener('mouseleave', () => { gsap.to(btn, { x:0, y:0, duration:0.6, ease:'elastic.out(1,0.5)' }); });
     });
 
-    // ── ABOUT SECTION PARALLAX ─────────────────────────────────────
-    gsap.to('.about-img-frame img', {
-      scrollTrigger: {
-        trigger: '#about',
-        start: 'top bottom',
-        end: 'bottom top',
-        scrub: 1.2,
-      },
-      y: -60,
-      scale: 1.05,
-    });
-
-    // ── BIG QUOTE CLIP-PATH REVEAL ─────────────────────────────────
-    gsap.from('#quote-section .big-quote-text', {
-      clipPath: 'inset(0 100% 0 0)',
-      duration: 1.4,
-      ease: 'power4.inOut',
-      scrollTrigger: {
-        trigger: '#quote-section',
-        start: 'top 70%',
-        once: true,
-      },
-    });
-
-    // ── FORM ───────────────────────────────────────────────────────
+    // Form submission
     function handleSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
-      const input = document.getElementById('email-input');
-      gsap.to(btn, {
-        scale: 0.95, duration: 0.1,
-        onComplete: () => {
-          gsap.to(btn, { scale: 1, duration: 0.4, ease: 'elastic.out(1,0.5)' });
-          btn.textContent = '✓ Done';
-          btn.style.background = '#2a6a3a';
-          setTimeout(() => {
-            btn.textContent = 'Notify Me';
-            btn.style.background = '';
-            input.value = '';
-          }, 2500);
-        }
-      });
+      gsap.to(btn, { scale:0.95, duration:0.1, onComplete:() => {
+        gsap.to(btn, { scale:1, duration:0.4, ease:'elastic.out(1,0.5)' });
+        btn.textContent = '✓ You\'re in';
+        btn.style.background = '#2a6a3a';
+        setTimeout(() => { btn.textContent='Join Now'; btn.style.background=''; document.getElementById('email-input').value=''; }, 2500);
+      }});
     }
   </script>
 </body>
