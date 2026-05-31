@@ -56,7 +56,7 @@
     .nav-cta:active { transform:scale(0.97); }
 
     /* ── HERO ── */
-    #hero { min-height:100dvh; display:grid; grid-template-columns:1fr 1fr; padding:0 3rem; padding-top:5.5rem; padding-bottom:3rem; gap:3rem; align-items:center; position:relative; overflow:hidden; }
+    #hero { min-height:100dvh; display:grid; grid-template-columns:1fr 1.15fr; padding:0 3rem; padding-top:5.5rem; padding-bottom:3rem; gap:2rem; align-items:center; position:relative; overflow:hidden; }
     #hero::before { content:''; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events:none; z-index:1; opacity:0.4; }
     .orb { position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none; }
     .orb-1 { width:600px; height:600px; background:radial-gradient(circle,rgba(200,90,58,0.1) 0%,transparent 70%); top:-100px; right:-100px; }
@@ -89,16 +89,22 @@
     .btn-ghost:hover svg { transform:translateX(4px); }
 
     /* ── BOOK COVER ── */
-    .hero-right { position:relative; z-index:2; display:flex; justify-content:center; align-items:center; }
-    .book-scene { width:340px; position:relative; }
-
-    /* Fade the bottom reflection into the dark background */
-    .book-scene::after {
-      content:'';
-      position:absolute; bottom:0; left:-10px; right:-10px;
-      height:38%;
-      background:linear-gradient(to top, var(--ink) 0%, var(--ink) 20%, transparent 100%);
-      pointer-events:none; z-index:5;
+    .hero-right {
+      position:relative; z-index:2;
+      display:flex; justify-content:center; align-items:center;
+    }
+    .book-scene {
+      width: min(92%, 520px);
+      position:relative;
+      /* Fade all edges into the dark bg — removes the white box from the 3D render */
+      -webkit-mask-image:
+        linear-gradient(to right,  transparent 0%, black 20%, black 80%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 3%,  black 68%, transparent 100%);
+      mask-image:
+        linear-gradient(to right,  transparent 0%, black 20%, black 80%, transparent 100%),
+        linear-gradient(to bottom, transparent 0%, black 3%,  black 68%, transparent 100%);
+      -webkit-mask-composite: source-in;
+      mask-composite: intersect;
     }
 
     /* Glow ring behind the book */
@@ -136,6 +142,8 @@
     .book-cover-img {
       width:100%; display:block;
       border-radius:3px;
+      max-height: 82vh;
+      object-fit: contain;
     }
 
     /* Floating badge */
@@ -290,8 +298,8 @@
     /* ── RESPONSIVE ── */
     @media (max-width:900px) {
       #hero { grid-template-columns:1fr; padding:5.5rem 1.5rem 2rem; }
-      .hero-right { margin-top:1rem; }
-      .book-scene { width:240px; }
+      .hero-right { margin-top:1.5rem; }
+      .book-scene { width: min(88%, 380px); }
       #about { grid-template-columns:1fr; padding:3rem 1.5rem; }
       .about-image-col { order:-1; }
       .cs-grid { grid-template-columns:1fr; }
