@@ -144,10 +144,6 @@
       object-fit: contain;
     }
 
-    /* Floating badge — sits on hero-right, above the masked book-scene */
-    .floating-badge { position:absolute; top:2rem; right:0; background:var(--orange); padding:0.7rem 0.9rem; clip-path:polygon(0 0,100% 0,100% 80%,50% 100%,0 80%); text-align:center; transform:rotate(8deg); z-index:20; opacity:0; }
-    .badge-line1 { font-size:0.58rem; font-weight:700; letter-spacing:0.12em; text-transform:uppercase; color:white; }
-    .badge-line2 { font-size:0.52rem; font-weight:500; color:rgba(255,255,255,0.85); }
 
     /* ── MARQUEE ── */
     .marquee-band { border-top:1px solid var(--border); border-bottom:1px solid var(--border); overflow:hidden; padding:0.85rem 0; white-space:nowrap; background:rgba(255,255,255,0.02); }
@@ -446,12 +442,6 @@
     </div>
 
     <div class="hero-right" style="position:relative;">
-      <!-- Badge sits OUTSIDE the masked book-scene so the mask doesn't clip it -->
-      <div class="floating-badge" id="badge">
-        <div class="badge-line1">Shingo</div>
-        <div class="badge-line2">Endorsed</div>
-      </div>
-
       <div class="book-scene" id="book-scene">
         <div class="book-glow"></div>
 
@@ -778,12 +768,11 @@
     // Hero entrance
     const tl = gsap.timeline({ defaults:{ ease:'power4.out' } });
     tl.from('#hero-kicker', { opacity:0, y:20, duration:0.7, delay:0.2 })
-      .from('#hero-title',  { opacity:0, y:48, duration:1 }, '-=0.3')
+      .from('#hero-title',  { y:48, duration:1 }, '-=0.3')
       .to('#hero-sub',      { opacity:1, duration:0.8 }, '-=0.5')
       .to('#hero-stats',    { opacity:1, duration:0.6 }, '-=0.4')
       .to('#hero-actions',  { opacity:1, duration:0.6 }, '-=0.4')
-      .from('#book-3d',     { opacity:0, y:50, duration:1.0, ease:'power3.out' }, '-=0.7')
-      .to('#badge',         { opacity:1, duration:0.5, ease:'back.out(2)' }, '-=0.3');
+      .from('#book-3d',     { opacity:0, y:50, duration:1.0, ease:'power3.out' }, '-=0.7');
 
     // Counters
     document.querySelectorAll('[data-count]').forEach(el => {
