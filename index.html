@@ -48,7 +48,12 @@
     nav { position:fixed; top:0; left:0; right:0; z-index:100; padding:1.1rem 3rem; display:flex; align-items:center; justify-content:space-between; transition:background 0.4s,backdrop-filter 0.4s; }
     nav.scrolled { background:rgba(10,13,18,0.88); backdrop-filter:blur(14px); border-bottom:1px solid var(--border); }
     .nav-brand { display:flex; align-items:center; gap:0.75rem; text-decoration:none; }
-    .nav-logo-mark { flex-shrink:0; }
+    .nav-logo-mark {
+      flex-shrink:0;
+      width:44px; height:auto;
+      /* Original logo is dark-on-transparent — invert to light-on-transparent for dark theme */
+      filter: invert(1) brightness(1.15);
+    }
     .nav-logo-text { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:var(--cream); line-height:1.2; }
     .nav-logo-sub { font-size:0.56rem; font-weight:400; letter-spacing:0.06em; color:var(--muted); display:block; }
     .nav-links { display:flex; align-items:center; gap:2rem; }
@@ -349,6 +354,7 @@
     /* ── FOOTER ── */
     footer { padding:2.5rem 3rem; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:2rem; flex-wrap:wrap; }
     .footer-brand { display:flex; align-items:center; gap:0.6rem; }
+    .footer-logo-mark { width:36px; height:auto; filter: invert(1) brightness(0.55); opacity:0.7; }
     .footer-logo-text { font-size:0.72rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase; color:rgba(244,237,227,0.4); }
     .footer-links { display:flex; gap:2rem; }
     .footer-link { font-size:0.75rem; color:var(--muted); text-decoration:none; transition:color 0.2s; }
@@ -382,33 +388,8 @@
   <!-- ── NAV ── -->
   <nav id="nav">
     <a href="#" class="nav-brand">
-      <!-- EB Monogram — blueprint grid + bold typeset letters -->
-      <svg class="nav-logo-mark" width="42" height="38" viewBox="0 0 60 54" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Background construction grid -->
-        <g stroke="rgba(244,237,227,0.16)" stroke-width="0.4">
-          <line x1="6"  y1="4" x2="6"  y2="50"/>
-          <line x1="14" y1="4" x2="14" y2="50"/>
-          <line x1="22" y1="4" x2="22" y2="50"/>
-          <line x1="30" y1="4" x2="30" y2="50"/>
-          <line x1="38" y1="4" x2="38" y2="50"/>
-          <line x1="46" y1="4" x2="46" y2="50"/>
-          <line x1="54" y1="4" x2="54" y2="50"/>
-          <line x1="4" y1="6"  x2="56" y2="6"/>
-          <line x1="4" y1="14" x2="56" y2="14"/>
-          <line x1="4" y1="22" x2="56" y2="22"/>
-          <line x1="4" y1="30" x2="56" y2="30"/>
-          <line x1="4" y1="38" x2="56" y2="38"/>
-          <line x1="4" y1="46" x2="56" y2="46"/>
-        </g>
-        <!-- EB as actual text — bold sans, kerned tight -->
-        <text x="30" y="40"
-              text-anchor="middle"
-              font-family="'Geist', 'Inter', 'Helvetica Neue', sans-serif"
-              font-weight="900"
-              font-size="38"
-              letter-spacing="-2"
-              fill="var(--cream, #f4ede3)">EB</text>
-      </svg>
+      <!-- Brand mark (cropped from official EB logo, CSS-inverted for dark theme) -->
+      <img class="nav-logo-mark" src="eb-mark.png" alt="EB" width="44" height="29"/>
       <div>
         <span class="nav-logo-text">The Excellence Blueprint</span>
         <span class="nav-logo-sub">by Rajinder Singh</span>
@@ -754,27 +735,7 @@
   <!-- ── FOOTER ── -->
   <footer>
     <div class="footer-brand">
-      <svg width="34" height="31" viewBox="0 0 60 54" fill="none">
-        <g stroke="rgba(244,237,227,0.1)" stroke-width="0.4">
-          <line x1="6"  y1="4" x2="6"  y2="50"/>
-          <line x1="14" y1="4" x2="14" y2="50"/>
-          <line x1="22" y1="4" x2="22" y2="50"/>
-          <line x1="30" y1="4" x2="30" y2="50"/>
-          <line x1="38" y1="4" x2="38" y2="50"/>
-          <line x1="46" y1="4" x2="46" y2="50"/>
-          <line x1="54" y1="4" x2="54" y2="50"/>
-          <line x1="4" y1="6"  x2="56" y2="6"/>
-          <line x1="4" y1="14" x2="56" y2="14"/>
-          <line x1="4" y1="22" x2="56" y2="22"/>
-          <line x1="4" y1="30" x2="56" y2="30"/>
-          <line x1="4" y1="38" x2="56" y2="38"/>
-          <line x1="4" y1="46" x2="56" y2="46"/>
-        </g>
-        <text x="30" y="40" text-anchor="middle"
-              font-family="'Geist', 'Inter', 'Helvetica Neue', sans-serif"
-              font-weight="900" font-size="38" letter-spacing="-2"
-              fill="rgba(244,237,227,0.45)">EB</text>
-      </svg>
+      <img class="footer-logo-mark" src="eb-mark.png" alt="EB" width="36" height="24"/>
       <span class="footer-logo-text">The Excellence Blueprint</span>
     </div>
     <div class="footer-links">
